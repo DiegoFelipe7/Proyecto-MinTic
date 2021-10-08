@@ -7,6 +7,8 @@ import React from "react";
 import Header from '../../components/Header';
 import ListaVentas from './ListaVentas';
 import Alert from '../../components/Alert';
+import CallApi from "../../api";
+import {useEffect, useState} from "react";
 
 const listventas = [{
     "id": 1,
@@ -25,6 +27,8 @@ const listventas = [{
     "total": 30000,
     "nombreVendedor": "Manuel"
 }]
+
+ 
 
 class AgregarVenta extends React.Component {
 
@@ -61,6 +65,7 @@ class AgregarVenta extends React.Component {
 
         }
     }
+
 
     handleValidation() {
         let fields = this.state.fields;

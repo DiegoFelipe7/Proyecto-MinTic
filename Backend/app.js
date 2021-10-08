@@ -5,6 +5,7 @@ var app = express();
 
 const productsRoutes = require("./routes/products");
 const categoriaRoutes = require("./routes/categoria");
+const ventasRoutes = require("./routes/ventas");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -16,4 +17,5 @@ mongoose.connect("mongodb+srv://alejo:IIrpVJdHq1P7H9KE@cluster0.702jh.mongodb.ne
 
 app.use("/api/products", productsRoutes);
 app.use("/api/categoria", categoriaRoutes);
+app.use("/api/ventas", ventasRoutes);
 module.exports = app;
