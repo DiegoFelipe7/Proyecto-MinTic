@@ -16,7 +16,7 @@ function Lista_Productos(){
         
     return(
         <div className="row">
-            { productos.map((producto)=>(<Producto producto={productos} />))}
+            { productos.map((producto)=>(<Producto productos={productos} producto={producto}/>))}
         </div>         
     );
 }
