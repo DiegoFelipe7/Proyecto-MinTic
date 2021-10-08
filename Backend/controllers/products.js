@@ -30,6 +30,17 @@ exports.getProductId=(req, res)=>{
     }
   })
 }
+exports.getProductIdLazyLoading = (req, res) => {
+  Producto.findById(req.params.id)
+    .populate("categoria")
+    .then((productoResult) => {
+      if (productoResult) {
+        res.status(200).json(productoResult);
+      } else {
+        res.status(404).json("Producto no encontrado");
+      }
+    });
+};
 //metodo para filtrar productos por una propiedad especifica
 exports.getProductoDisponible=(req, res) => {
   Producto.find({disponible:true}).then((productoResult) => {
