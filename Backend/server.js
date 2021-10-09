@@ -41,7 +41,7 @@ const onListening = () => {
   const bind = typeof port === "string" ? "pipe " + port : "port " + port;
 };
 
-const port = normalizePort(process.env.PORT || "3000");
+const port = normalizePort(process.env.PORT || "3001");
 app.set("port", port);
 
 const server = http.createServer(app);

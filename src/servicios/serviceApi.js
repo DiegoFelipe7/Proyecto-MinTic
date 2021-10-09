@@ -38,6 +38,9 @@ const callApi = async (url, met,value) => {
       list() {
         return callApi("/categoria", null, null);
       },
+      getById(value) {
+        return callApi("/categoria/"+value, null, null);
+      }
     },
   };
   
