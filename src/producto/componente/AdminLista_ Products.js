@@ -1,35 +1,51 @@
 import { Link } from "react-router-dom";
-import React,{useState} from "react";
-import UpdateProd from './UpdateProd';
-const AdminLista_Products = ({ prod }) => {
+import React,{useState, useEffect} from "react";
+import serviceApi from "../../servicios/serviceApi";
+
+const AdminLista_Products = ({ p }) => {
     
-    const  [ value , setValue ]  = useState (1);
+    const  [ value , setValue ]  = useState (3);
     const EliminarItem = idSeleccionado => {
-        const newList = prod.filter((item) => item.id !== idSeleccionado)
-        prod.splice(0, prod.length);
-        newList.map((newProd)=>{
-            prod.push({
-                id: newProd.id,
-                nombreP: newProd.nombreP,
-                cantidad: newProd.cantidad,
-                precio: newProd.precio
+        const newList = p.filter((item) => item.id !== idSeleccionado)
+        p.splice(0, p.length);
+        newList.map((newP)=>{
+            p.push({
+                id: newP.id,
+                nombreP: newP.nombreP,
+                cantidad: newP.cantidad,
+                precio: newP.precio
             })
         })
         setValue( ( value +  1 ) )
         console.log("ELIMINADO", idSeleccionado,newList)
-    }
+    };
+    const [ listProductos, setListProductos ] = useState([]);
+    useEffect(() => {
+        const fetchData = async () => {
+          const response = await serviceApi.products.list();
+          setListProductos(response);
+        };
+    
+        fetchData();
+      }, []);
+    
     return (
-        prod.map((prode)=>(
+        
+        listProductos.map((prod)=>(
         <tr>
-            <th scope="row">{prode.id}</th>
-            <td>{prode.nombreP}</td>
-            <td>{prode.cantidad}</td>
-            <td>{prode.precio}</td>
+            <th scope="row">1</th>
+            <td>{prod.nombre_producto}</td>
+            <td>{prod.categoria}</td>
+            <td>{prod.precio_unitario}</td>
+            <td>{prod.cantidad_producto}</td>
+            <td>{prod.disponible === true ? "Si":"No"}</td>
+            <td>{prod.descripcion}</td>
             <td>
-                <Link to="/updateProd" prod={prode.id}><button type="button" class="btn btn-warning">Editar</button></Link>
-                <button class="btn btn-danger" onClick={() => EliminarItem(prode.id)}>Eliminar</button>
+                <Link to={"/updateProd/"+prod._id} id={prod._id}><button type="button" className="btn btn-warning">Editar</button></Link>
+                <button className="btn btn-danger" onClick={() => EliminarItem(prod._id)}>Eliminar</button>
             </td>
         </tr>
+        
     ))
     )
 }
