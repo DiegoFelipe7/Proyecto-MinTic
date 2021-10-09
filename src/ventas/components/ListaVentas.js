@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React,{useState, useEffect} from "react";
 import UpdateVentas from './UpdateVentas';
+import serviceApi from "../../servicios/serviceApi";
+
+
 import { Link } from "react-router-dom";
 const ListaVentas = ({ ventas }) => {
     const  [ value , setValue ]  = useState (1);
@@ -24,11 +27,25 @@ const ListaVentas = ({ ventas }) => {
         const lista = ventas.filter((item) => item.id == idSeleccionado);   
         <UpdateVentas  info = {lista} />  
     }
+
+    const [ Ventas, setListVentas ] = useState([]);
+    useEffect(() => {
+        const fetchData = async () => {
+          const response = await serviceApi.ventas.list();
+          setListVentas(response);
+         
+        };
+    
+        fetchData();
+      }, []);
+
     return (
-        ventas.map((vent) => (    
+        
+        Ventas.map((vent) => (    
+            
             <tr>
             <th scope="row">{vent.id}</th>
-            <td>{vent.nombreComprador}</td>
+            <td>{vent.nombreCliente}</td>
             <td>{vent.producto}</td>
             <td>{vent.cantidad}</td>
             <td>{vent.nombreVendedor}</td>

@@ -39,6 +39,16 @@ const callApi = async (url, met,value) => {
         return callApi("/categoria", null, null);
       },
     },
+      ventas: {
+        list() {
+          return callApi("/ventas", null, null);
+        },
+        create(value) {
+          return callApi("/ventas", 'POST', value);
+        },
+      },
+
+    
   };
   
   export default api;
