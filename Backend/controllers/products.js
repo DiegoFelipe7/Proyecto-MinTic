@@ -13,7 +13,9 @@ exports.addProduct=(req, res) => {
     precio_unitario:req.body.precio_unitario,
     cantidad_producto:req.body.cantidad_producto,
     descripcion:req.body.descripcion,
-    disponible:req.body.disponible
+    disponible:req.body.disponible,
+    imagen:req.body.imagen,
+    categoria:req.body.categoria
   })
   //metodo para guardar productos
   productoAdd.save().then((createdProduc)=>{
