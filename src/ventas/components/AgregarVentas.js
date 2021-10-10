@@ -29,8 +29,6 @@ const listventas = [{
     "nombreVendedor": "Manuel"
 }]
 
- 
-
 class AgregarVenta extends React.Component {
 
     constructor(props) {
@@ -57,6 +55,10 @@ class AgregarVenta extends React.Component {
      //Extrae el object de la categoria.
      filterProd(id){
         const s = this.state.products.filter(x => x._id === id).map(z => z._id);
+        return s;
+    }
+    filterPrecioUni(id){
+        const s = this.state.products.filter(x => x._id === id).map(z => z.precio_unitario);
         return s;
     }
 
@@ -153,20 +155,17 @@ class AgregarVenta extends React.Component {
         e.preventDefault();
         // const products = [];
         console.log(e)
+        const precioUni=this.filterPrecioUni(e["target"]["regVentaProducto"].value)
+        const cantidaad=e["target"]["regVentaCantidad"].value;
+        const total=precioUni*cantidaad
+        console.log(total)
         const venta = {
             nombreCliente: e["target"]["regVentaCliente"].value,
             producto: this.filterProd(e["target"]["regVentaProducto"].value),
             cantidad: e["target"]["regVentaCantidad"].value,
             nombreVendedor: "6161fead2642102487992be3",
-            total: e["target"]["regVentaTotal"].value}
+            total: total}
       
-         const v ={
-            nombreCliente: 'Diego',
-            producto: 'camisa',
-            cantidad: 2,
-            nombreVendedor: "6161fead2642102487992be3",
-            total: 12000
-         }
         const add = async () => {
             const response = await serviceApi.ventas .create(venta);
             console.log(response);
