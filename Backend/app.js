@@ -6,7 +6,7 @@ var app = express();
 const productsRoutes = require("./routes/products");
 const categoriaRoutes = require("./routes/categoria");
 const ventasRoutes = require("./routes/ventas");
-
+const UsuarioRoutes = require('./routes/users');
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors())
@@ -15,6 +15,7 @@ mongoose.connect("mongodb+srv://alejo:IIrpVJdHq1P7H9KE@cluster0.702jh.mongodb.ne
     console.log("Estamos conectados")
 });
 
+app.use("/api/Usuarios", UsuarioRoutes);
 app.use("/api/products", productsRoutes);
 app.use("/api/categoria", categoriaRoutes);
 app.use("/api/ventas", ventasRoutes);

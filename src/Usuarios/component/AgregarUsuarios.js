@@ -7,6 +7,7 @@ import ListaUsuarios from './ListaUsuarios';
 import React from "react";
 import Header from '../../components/Header';
 import Alert from '../../components/Alert';
+import serviceApi from '../../servicios/serviceApi'
 
 const lista_usuarios = [{
     "id": 1,
@@ -34,9 +35,15 @@ class AgregarUsuario extends React.Component {
         this.state = {
             fields: {},
             errors: {},
-            alerta: ""
+            alerta: "",
+            Usuarios:[]
             
         };
+        const getUsusarios = async () => {
+            const response = await serviceApi.Usuarios.list();;
+            this.setState({ Usuarios: response});
+         }
+         getUsusarios();
     }
 
     handleValidation() {
@@ -117,20 +124,27 @@ class AgregarUsuario extends React.Component {
 
     contactSubmit(e) {
         e.preventDefault();
+        const usuarios={
+            nombre_usu: e["target"]["regUsuarioNombre"].value,
+            apellido_usu: e["target"]["regUsuarioApellidos"].value,
+            tipo_documento_usu: e["target"]["regUsuarioTipoId"].value,
+            identificacion_usu: e["target"]["regUsuarioDocumento"].value,
+            rol_usu: e["target"]["regUsuarioRol"].value,
+        }
 
+        const add = async () => {
+            const response = await serviceApi.Usuarios.create(usuarios);
+            console.log(response);
+        }
+        add();
+        
         if (this.handleValidation()) {
-            lista_usuarios.push(
-                {
-                    id: lista_usuarios.length + 1,
-                    nombre: e["target"][0].value,
-                    apellido: e["target"][1].value,
-                    tipo_identificacion: e["target"][2].value,
-                    numero_documento: e["target"][3].value,
-                    rol: e["target"][4].value,
-                } );
+        
+
             this.setState({alerta: "success"});
-        }else{
-	        this.setState({alerta: "danger"});
+
+        } else {
+            this.setState({alerta: "danger"});
         }
     }
 

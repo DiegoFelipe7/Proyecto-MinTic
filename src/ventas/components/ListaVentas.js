@@ -1,8 +1,6 @@
 import React,{useState, useEffect} from "react";
 import UpdateVentas from './UpdateVentas';
 import serviceApi from "../../servicios/serviceApi";
-
-
 import { Link } from "react-router-dom";
 const ListaVentas = ({ ventas }) => {
     const  [ value , setValue ]  = useState (1);
