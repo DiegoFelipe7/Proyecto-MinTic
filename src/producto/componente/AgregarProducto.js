@@ -42,7 +42,12 @@ class AgregarProducto extends React.Component {
         }
         getCategoria();
     }
-
+    //Extrae el object de la categoria.
+    filterCat(id){
+        const s = this.state.categorias.filter(x => x._id === id).map(z => z._id);
+        return s;
+    }
+    
     handleValidation() {
         let fields = this.state.fields;
         let errors = {};
@@ -86,7 +91,7 @@ class AgregarProducto extends React.Component {
                 errors["regProductPrecio"] = "Solo números desde 0 en adelante.";
             }
         }
-        
+
         //Cantidad
         if (!fields["regProductCantidad"]) {
             formIsValid = false;
@@ -143,28 +148,21 @@ class AgregarProducto extends React.Component {
 
     contactSubmit(e) {
         e.preventDefault();
-        
 
         if (this.handleValidation()) {
             
-            products.push(
-                {
-                    nombreP: e["target"]["regProductNombre"].value,
-                    cantidad: e["target"]["regProductCantidad"].value,
-                    precio: e["target"]["regProductPrecio"].value,
-                    imagen: e["target"]["regProductImagen"].value
-                }
-            );
-            const p = {
+            const producto = {
                 nombre_producto: e["target"]["regProductNombre"].value,
                 precio_unitario: e["target"]["regProductPrecio"].value,
                 cantidad_producto: e["target"]["regProductCantidad"].value,
                 descripcion: e["target"]["regProductDescripcion"].value,
-                disponible: e["target"]["regProductDisponible"].value
+                disponible: e["target"]["regProductDisponible"].value,
+                imagen: e["target"]["regProductImagen"].value,
+                categoria: this.filterCat(e["target"]["regProductCategoria"].value)
             };
-
+            
             const add = async () => {
-                const response = await serviceApi.products.create(p);
+                const response = await serviceApi.products.create(producto);
                 console.log(response);
             }
             add();

@@ -15,13 +15,29 @@ class UpdateProd extends React.Component {
             errors: {},
             alerta: "",
             id: this.props.location.pathname.split('/')[2], //obtiene el id desde la url.
-            producto: []
         };
+        this.producto = {
+            id: {},
+            nombre: "",
+            categoria: [],
+            precio: 0,
+            cantidad: 0,
+            disponible: false,
+            descripcion: "",
+            imagen: ""
+        }
 
         const getProduct = async () => {
             const response = await serviceApi.products.getById(this.state.id);
-            this.setState({producto: response});
-            //console.log(this.state.producto);
+            this.producto["id"] = response._id;
+            this.producto["nombre"] = response.nombre_producto;
+            this.producto["categoria"] = response.categoria;
+            this.producto["precio"] = response.precio_unitario;
+            this.producto["cantidad"] = response.cantidad_producto;
+            this.producto["disponible"] = response.disponible;
+            this.producto["descripcion"] = response.descripcion;
+            this.producto["imagen"] = response.imagen;
+            console.log(response);
         }
         getProduct();
     }
@@ -138,8 +154,7 @@ class UpdateProd extends React.Component {
 
     handleChange(field, e) {
         let f = this.state.fields;
-        f[field] = e.target.value;
-        console.log(this.state.producto);
+        f[field] = e.target.value;        
         this.setState({ f, alerta: ""});
     }
     render(){
@@ -171,7 +186,7 @@ class UpdateProd extends React.Component {
                                             <span className="input-group-text" id="inputGroupPrepend">
                                                 <img src={iconUser} className="producto-content-form-icon" alt="icono user" />
                                             </span>
-                                            <input type="text" onChange={this.handleChange.bind(this, "updProductNombre")} value={this.state.producto.nombre_producto} className="form-control" id="updProductNombre" name="updProductNombre" aria-describedby="inputGroupPrepend" placeholder="Escriba el nombre del producto" required />
+                                            <input type="text" onChange={this.handleChange.bind(this, "updProductNombre")} value={this.producto.nombre} className="form-control" id="updProductNombre" name="updProductNombre" aria-describedby="inputGroupPrepend" placeholder="Escriba el nombre del producto" required />
                                         </div>
                                         <div>
                                             <span style={{ color: "red" }}>{this.state.errors["updProductNombre"]}</span>
@@ -183,8 +198,8 @@ class UpdateProd extends React.Component {
                                             <span className="input-group-text">
                                                 <img src={iconUser} className="producto-content-form-icon" alt="icono"/>
                                             </span>
-                                            <select className="form-select" id="updProductCategoria" onChange={this.handleChange.bind(this, "updProductCategoria")} value={this.state.fields["updProductCategoria"]} required >
-                                                <option value="" selected>Seleccione la categoria</option>
+                                            <select className="form-select" id="updProductCategoria" onChange={this.handleChange.bind(this, "updProductCategoria")} required >
+                                            <option value={this.producto.categoria._id} >{this.producto.categoria.nombre_categoria}</option>
                                                 <option value="Calzado" >Calzado</option>
                                                 
                                             </select>
@@ -199,7 +214,7 @@ class UpdateProd extends React.Component {
                                             <span className="input-group-text" id="inputGroupPrepend">
                                                 $
                                             </span>
-                                            <input type="number" onChange={this.handleChange.bind(this, "updProductPrecio")} value={this.state.fields["updProductPrecio"]} className="form-control" id="updProductPrecio" name="updProductPrecio" aria-describedby="inputGroupPrepend" placeholder="Escriba el precio del producto" required />
+                                            <input type="number" onChange={this.handleChange.bind(this, "updProductPrecio")} value={this.producto.precio} className="form-control" id="updProductPrecio" name="updProductPrecio" aria-describedby="inputGroupPrepend" placeholder="Escriba el precio del producto" required />
                                         </div>
                                         <div>
                                             <span style={{ color: "red" }}>{this.state.errors["updProductPrecio"]}</span>
@@ -211,7 +226,7 @@ class UpdateProd extends React.Component {
                                             <span className="input-group-text" id="inputGroupPrepend">
                                                 #
                                             </span>
-                                            <input type="number" onChange={this.handleChange.bind(this, "updProductCantidad")} value={this.state.fields["updProductCantidad"]} className="form-control" id="updProductCantidad" name="updProductCantidad" aria-describedby="inputGroupPrepend" placeholder="Escriba la cantidad total del producto" required />
+                                            <input type="number" onChange={this.handleChange.bind(this, "updProductCantidad")} value={this.producto.cantidad} className="form-control" id="updProductCantidad" name="updProductCantidad" aria-describedby="inputGroupPrepend" placeholder="Escriba la cantidad total del producto" required />
                                         </div>
                                         <div>
                                             <span style={{ color: "red" }}>{this.state.errors["updProductCantidad"]}</span>
@@ -223,8 +238,8 @@ class UpdateProd extends React.Component {
                                             <span className="input-group-text">
                                                 <img src={iconUser} className="producto-content-form-icon" alt="icono"/>
                                             </span>
-                                            <select className="form-select" id="updProductDisponible" onChange={this.handleChange.bind(this, "updProductDisponible")} value={this.state.fields["updProductDisponible"]} required >
-                                                <option value="" selected>Seleccione el estado del producto</option>
+                                            <select className="form-select" id="updProductDisponible" onChange={this.handleChange.bind(this, "updProductDisponible")} required >
+                                                <option value={this.producto.disponible} selected>{this.producto.disponible === true ? "Disponible":"No disponible"}</option>
                                                 <option value="true">Disponible</option>
                                                 <option value="false">No disponible</option>
                                             </select>
@@ -244,7 +259,7 @@ class UpdateProd extends React.Component {
                                     </div>
                                     <div className="col-sm-12 position-relative">
                                         <label htmlFor="updProductDescripcion" className="form-label">Descripción</label>
-                                        <textarea className="form-control" onChange={this.handleChange.bind(this, "updProductDescripcion")} value={this.state.fields["updProductDescripcion"]} id="validationTextarea" name="updProductDescripcion" placeholder="Agregue una descripcion del producto" required></textarea>
+                                        <textarea className="form-control" onChange={this.handleChange.bind(this, "updProductDescripcion")} value={this.producto.descripcion} id="validationTextarea" name="updProductDescripcion" placeholder="Agregue una descripcion del producto" required></textarea>
                                         <div>
                                             <span style={{ color: "red" }}>{this.state.errors["updProductDescripcion"]}</span>
                                         </div>

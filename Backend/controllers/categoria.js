@@ -14,3 +14,12 @@ exports.getCategorias = (req, res) => {
     res.status(200).json(categorias)
   })
 };
+exports.getCategoriaId=(req, res)=>{
+  Categoria.findById(req.params.id).then((categoriaResult)=>{
+    if(categoriaResult){
+      res.status(200).json(categoriaResult);
+    }else{
+      res.status(404).json("Categoriao no encontrado")
+    }
+  })
+}
