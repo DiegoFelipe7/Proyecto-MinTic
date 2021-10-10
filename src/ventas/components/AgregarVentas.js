@@ -54,6 +54,11 @@ class AgregarVenta extends React.Component {
          getVendedires();
      
     }
+     //Extrae el object de la categoria.
+     filterProd(id){
+        const s = this.state.products.filter(x => x._id === id).map(z => z._id);
+        return s;
+    }
 
 
     handleValidation() {
@@ -87,17 +92,17 @@ class AgregarVenta extends React.Component {
             }
         }
         //Productos
-        // if (!fields["regVentaProducto"]) {
-        //     formIsValid = false;
-        //     errors["regVentaProducto"] = "Campo obligatorio.";
-        // }
+        if (!fields["regVentaProducto"]) {
+            formIsValid = false;
+            errors["regVentaProducto"] = "Campo obligatorio.";
+        }
 
-        // if (typeof fields["regVentaProducto"] !== "undefined") {
-        //     if (!fields["regVentaProducto"] != "") {
-        //         formIsValid = false;
-        //         errors["regVentaProducto"] = "Seleccione una opción";
-        //     }
-        // }
+        if (typeof fields["regVentaProducto"] !== "undefined") {
+            if (!fields["regVentaProducto"] != "") {
+                formIsValid = false;
+                errors["regVentaProducto"] = "Seleccione una opción";
+            }
+        }
 
         //Cantidad
         if (!fields["regVentaCantidad"]) {
@@ -115,29 +120,29 @@ class AgregarVenta extends React.Component {
             errors["regVentaCantidad"] = "Solo números mayores a 0.";
         }
         //Total
-        /*if (!fields["regVentaTotal"]) {
-            formIsValid = false;
-            errors["regVentaTotal"] = "Campo obligatorio.";
-        }
-
-        if (typeof fields["regVentaTotal"] !== "undefined") {
-            if (!fields["regVentaTotal"].match(/^[0-9]+$/)) {
-                formIsValid = false;
-                errors["regVentaTotal"] = "Solo números desde 0 en adelante.";
-            }
-        }*/
-        //Vendedor
-        // if (!fields["regVentaVendedor"]) {
+        // if (!fields["regVentaTotal"]) {
         //     formIsValid = false;
-        //     errors["regVentaVendedor"] = "Campo obligatorio.";
+        //     errors["regVentaTotal"] = "Campo obligatorio.";
         // }
 
-        // if (typeof fields["regVentaVendedor"] !== "undefined") {
-        //     if (!fields["regVentaVendedor"] != "") {
+        // if (typeof fields["regVentaTotal"] !== "undefined") {
+        //     if (!fields["regVentaTotal"].match(/^[0-9]+$/)) {
         //         formIsValid = false;
-        //         errors["regVentaVendedor"] = "Seleccione una opción";
+        //         errors["regVentaTotal"] = "Solo números desde 0 en adelante.";
         //     }
         // }
+        //Vendedor
+        if (!fields["regVentaVendedor"]) {
+            formIsValid = false;
+            errors["regVentaVendedor"] = "Campo obligatorio.";
+        }
+
+        if (typeof fields["regVentaVendedor"] !== "undefined") {
+            if (!fields["regVentaVendedor"] != "") {
+                formIsValid = false;
+                errors["regVentaVendedor"] = "Seleccione una opción";
+            }
+        }
 
         this.setState({ errors: errors , alerta: "" });
         return formIsValid;
@@ -147,29 +152,29 @@ class AgregarVenta extends React.Component {
     contactSubmit(e) {
         e.preventDefault();
         // const products = [];
-         const v =[{
+        console.log(e)
+        const venta = {
+            nombreCliente: e["target"]["regVentaCliente"].value,
+            producto: this.filterProd(e["target"]["regVentaProducto"].value),
+            cantidad: e["target"]["regVentaCantidad"].value,
+            nombreVendedor: "6161fead2642102487992be3",
+            total: e["target"]["regVentaTotal"].value}
+      
+         const v ={
             nombreCliente: 'Diego',
             producto: 'camisa',
             cantidad: 2,
             nombreVendedor: "6161fead2642102487992be3",
             total: 12000
-         }]
+         }
         const add = async () => {
-            const response = await serviceApi.products.create(v);
+            const response = await serviceApi.ventas .create(venta);
             console.log(response);
         }
         add();
         
         if (this.handleValidation()) {
-            listventas.push({
-                id: ListaVentas.length + 1,
-                nombreComprador: e["target"][0].value,
-                ndocument: e["target"][1].value,
-                producto: e["target"][2].value,
-                cantidad: e["target"][3].value,
-                total: e["target"][4].value,
-                nombreVendedor: e["target"][5].value
-            })
+        
 
             this.setState({alerta: "success"});
 
@@ -241,7 +246,7 @@ class AgregarVenta extends React.Component {
                                                     <option value="" selected>Seleccione un producto</option>
                                                     {this.state.products.map((prod) => {
                                                         return (
-                                                            <option value={prod.nombre_producto}>{prod.nombre_producto}</option>
+                                                            <option value={prod._id}>{prod.nombre_producto}</option>
                                                         )
                                                     })}
                                                 </select>
