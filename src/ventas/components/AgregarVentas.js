@@ -7,6 +7,9 @@ import React from "react";
 import Header from '../../components/Header';
 import ListaVentas from './ListaVentas';
 import Alert from '../../components/Alert';
+import serviceApi from "../../servicios/serviceApi";
+import CallApi from "../../api";
+import {useEffect, useState} from "react";
 
 const listventas = [{
     "id": 1,
@@ -35,32 +38,30 @@ class AgregarVenta extends React.Component {
             fields: {},
             errors: {},
             alerta: "",
-            datos: [{
-                "id": 1,
-                "nombreP": "Pantalones",
-                "cantidad": 3,
-                "precio": 15000,
-                "image": "https://m.media-amazon.com/images/I/61qMt8YrVtL._AC_UY445_.jpg"
-            },
-            {
-                "id": 2,
-                "nombreP": "Camisas",
-                "cantidad": 2,
-                "precio": 10000,
-                "image": "https://contents.mediadecathlon.com/p1786958/k$2b0a8a97ea3b1154f2f3734009451fe2/pantalon-de-montana-y-trekking-viaje-de-hombre-forclaz-travel-100-gris.jpg?&f=452x452"
-            }],
+            datos: [],
+            products: [],
             vendedores: [{
-                "id": 1,
-                "nombreVendedor": "Manuel"
-            },
-            {
-                "id": 2,
-                "nombreVendedor": "Cristian"
-            }
-            ]
+                nombre_vendedor:"uno"
+            }]
 
         }
+        const getVendedires = async () => {
+            const response = await serviceApi.products.list();
+            this.setState({ products: response});
+         }
+         getVendedires();
+     
     }
+     //Extrae el object de la categoria.
+     filterProd(id){
+        const s = this.state.products.filter(x => x._id === id).map(z => z._id);
+        return s;
+    }
+    filterPrecioUni(id){
+        const s = this.state.products.filter(x => x._id === id).map(z => z.precio_unitario);
+        return s;
+    }
+
 
     handleValidation() {
         let fields = this.state.fields;
@@ -121,17 +122,17 @@ class AgregarVenta extends React.Component {
             errors["regVentaCantidad"] = "Solo números mayores a 0.";
         }
         //Total
-        /*if (!fields["regVentaTotal"]) {
-            formIsValid = false;
-            errors["regVentaTotal"] = "Campo obligatorio.";
-        }
+        // if (!fields["regVentaTotal"]) {
+        //     formIsValid = false;
+        //     errors["regVentaTotal"] = "Campo obligatorio.";
+        // }
 
-        if (typeof fields["regVentaTotal"] !== "undefined") {
-            if (!fields["regVentaTotal"].match(/^[0-9]+$/)) {
-                formIsValid = false;
-                errors["regVentaTotal"] = "Solo números desde 0 en adelante.";
-            }
-        }*/
+        // if (typeof fields["regVentaTotal"] !== "undefined") {
+        //     if (!fields["regVentaTotal"].match(/^[0-9]+$/)) {
+        //         formIsValid = false;
+        //         errors["regVentaTotal"] = "Solo números desde 0 en adelante.";
+        //     }
+        // }
         //Vendedor
         if (!fields["regVentaVendedor"]) {
             formIsValid = false;
@@ -153,17 +154,26 @@ class AgregarVenta extends React.Component {
     contactSubmit(e) {
         e.preventDefault();
         // const products = [];
-
+        console.log(e)
+        const precioUni=this.filterPrecioUni(e["target"]["regVentaProducto"].value)
+        const cantidaad=e["target"]["regVentaCantidad"].value;
+        const total=precioUni*cantidaad
+        console.log(total)
+        const venta = {
+            nombreCliente: e["target"]["regVentaCliente"].value,
+            producto: this.filterProd(e["target"]["regVentaProducto"].value),
+            cantidad: e["target"]["regVentaCantidad"].value,
+            nombreVendedor: "6161fead2642102487992be3",
+            total: total}
+      
+        const add = async () => {
+            const response = await serviceApi.ventas .create(venta);
+            console.log(response);
+        }
+        add();
+        
         if (this.handleValidation()) {
-            listventas.push({
-                id: ListaVentas.length + 1,
-                nombreComprador: e["target"][0].value,
-                ndocument: e["target"][1].value,
-                producto: e["target"][2].value,
-                cantidad: e["target"][3].value,
-                total: e["target"][4].value,
-                nombreVendedor: e["target"][5].value
-            })
+        
 
             this.setState({alerta: "success"});
 
@@ -233,9 +243,9 @@ class AgregarVenta extends React.Component {
                                                 </span>
                                                 <select className="form-select" id="regVentaProducto" onChange={this.handleChange.bind(this, "regVentaProducto")} value={this.state.fields["regVentaProducto"]} required >
                                                     <option value="" selected>Seleccione un producto</option>
-                                                    {this.state.datos.map((prod) => {
+                                                    {this.state.products.map((prod) => {
                                                         return (
-                                                            <option value={prod.nombreP}>{prod.nombreP}</option>
+                                                            <option value={prod._id}>{prod.nombre_producto}</option>
                                                         )
                                                     })}
                                                 </select>
@@ -278,7 +288,7 @@ class AgregarVenta extends React.Component {
                                                     <option value="" selected>Seleccione el vendedor</option>
                                                     {this.state.vendedores.map((vend) => {
                                                         return (
-                                                            <option value={vend.nombreVendedor}>{vend.nombreVendedor}</option>
+                                                            <option value={vend.nombre_vendedor}>{vend.nombre_vendedor}</option>
                                                         )
                                                     })}
                                                 </select>

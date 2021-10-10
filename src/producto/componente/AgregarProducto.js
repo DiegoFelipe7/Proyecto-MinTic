@@ -1,11 +1,12 @@
 import './productos.css';
 import iconUser from '../../img/icon-user.svg';
 import iconIng from '../../img/icon-btn-ingresar.svg';
-import React from "react";
+import React, {useState, useEffect} from "react";
 import 'bootstrap/dist/css/bootstrap.css';
 import Header from '../../components/Header';
 import AdminLista_Products from './AdminLista_ Products';
 import Alert from '../../components/Alert';
+import serviceApi from "../../servicios/serviceApi";
 
 const products = [{
     "id": 1,
@@ -22,6 +23,7 @@ const products = [{
     "precio": 10000,
     "image":"https://contents.mediadecathlon.com/p1786958/k$2b0a8a97ea3b1154f2f3734009451fe2/pantalon-de-montana-y-trekking-viaje-de-hombre-forclaz-travel-100-gris.jpg?&f=452x452"
 }];
+
 class AgregarProducto extends React.Component {
 
     constructor(props) {
@@ -30,10 +32,22 @@ class AgregarProducto extends React.Component {
         this.state = {
             fields: {},
             errors: {},
-           alerta: ""
+           alerta: "",
+           categorias: []
         };
-    }
 
+        const getCategoria = async () => {
+            const response = await serviceApi.categorias.list();
+            this.setState({ categorias: response});
+        }
+        getCategoria();
+    }
+    //Extrae el object de la categoria.
+    filterCat(id){
+        const s = this.state.categorias.filter(x => x._id === id).map(z => z._id);
+        return s;
+    }
+    
     handleValidation() {
         let fields = this.state.fields;
         let errors = {};
@@ -46,9 +60,22 @@ class AgregarProducto extends React.Component {
         }
 
         if (typeof fields["regProductNombre"] !== "undefined") {
-            if (!fields["regProductNombre"].match(/^[a-zA-Z ]+$/)) {
+            if (!fields["regProductNombre"].match(/^[ña-zA-Z ]+$/)) {
                 formIsValid = false;
                 errors["regProductNombre"] = "Solo letras.";
+            }
+        }
+
+        //Categoria
+        if (!fields["regProductCategoria"]) {
+            formIsValid = false;
+            errors["regProductCategoria"] = "Campo obligatorio.";
+        }
+
+        if (typeof fields["regProductCategoria"] !== "undefined") {
+            if (!fields["regProductCategoria"] != "") {
+                formIsValid = false;
+                errors["regProductCategoria"] = "Seleccione una opción";
             }
         }
 
@@ -64,6 +91,7 @@ class AgregarProducto extends React.Component {
                 errors["regProductPrecio"] = "Solo números desde 0 en adelante.";
             }
         }
+
         //Cantidad
         if (!fields["regProductCantidad"]) {
             formIsValid = false;
@@ -77,19 +105,42 @@ class AgregarProducto extends React.Component {
             }
         }
 
-        //Descripcion
-        if (!fields["regProductDesc"]) {
+        //Disponible
+        if (!fields["regProductDisponible"]) {
             formIsValid = false;
-            errors["regProductDesc"] = "Campo obligatorio.";
+            errors["regProductDisponible"] = "Campo obligatorio.";
         }
 
-        if (typeof fields["regProductDesc"] !== "undefined") {
-            if (!fields["regProductDesc"].match(/^[a-zA-Z0-9 .:,)(-=&%\n]+$/)) {
+        if (typeof fields["regProductDisponible"] !== "undefined") {
+            if (!fields["regProductDisponible"] != "") {
                 formIsValid = false;
-                errors["regProductDesc"] = "Carácteres permitidos: .:,)(-=&%";
+                errors["regProductDisponible"] = "Seleccione una opción";
             }
         }
 
+        //Descripcion
+        if (!fields["regProductDescripcion"]) {
+            formIsValid = false;
+            errors["regProductDescripcion"] = "Campo obligatorio.";
+        }
+
+        if (typeof fields["regProductDescripcion"] !== "undefined") {
+            if (!fields["regProductDescripcion"].match(/^[ña-zA-Z0-9 .:,)(-=&%\n]+$/)) {
+                formIsValid = false;
+                errors["regProductDescripcion"] = "Carácteres permitidos: .:,)(-=&%";
+            }
+        }
+
+        //Imagen
+        if (!fields["regProductImagen"]) {
+            formIsValid = false;
+            errors["regProductImagen"] = "Campo obligatorio.";
+        }
+
+        if (!fields["regProductImagen"].match(/\.(jpg|jpeg|png|gif|svg)$/)) {
+            formIsValid = false;
+            errors["regProductImagen"] = "Tipo de imagen permitidos jpg, jpeg, png, gif, svg.";
+        }
 
         this.setState({ errors: errors , alerta: ""});
         return formIsValid;
@@ -97,23 +148,30 @@ class AgregarProducto extends React.Component {
 
     contactSubmit(e) {
         e.preventDefault();
-        
 
         if (this.handleValidation()) {
             
-            products.push(
-                {
-                    nombreP: e["target"][0].value,
-                    cantidad: e["target"][1].value,
-                    precio: e["target"][2].value,
-                    descripcion: e["target"][3].value
-                }
-
-            );
+            const producto = {
+                nombre_producto: e["target"]["regProductNombre"].value,
+                precio_unitario: e["target"]["regProductPrecio"].value,
+                cantidad_producto: e["target"]["regProductCantidad"].value,
+                descripcion: e["target"]["regProductDescripcion"].value,
+                disponible: e["target"]["regProductDisponible"].value,
+                imagen: e["target"]["regProductImagen"].value,
+                categoria: this.filterCat(e["target"]["regProductCategoria"].value)
+            };
+            
+            const add = async () => {
+                const response = await serviceApi.products.create(producto);
+                console.log(response);
+            }
+            add();
+            
             this.setState({alerta: "success"});
         }else{
 	        this.setState({alerta: "danger"});
         }
+
     }
 
     handleChange(field, e) {
@@ -143,13 +201,13 @@ class AgregarProducto extends React.Component {
                                         {this.state.alerta == "danger" ? <Alert tipo="danger" mensaje="Error al agregar el producto"/>: ""}
                                     </div>
                                 </div><br />
-                                <form className="card" onSubmit={this.contactSubmit.bind(this)}>
+                                <form className="card" onSubmit={this.contactSubmit.bind(this)} action="../api/products" type="POST">
                                     <div className="row g-2 p-2">
-                                        <div className="col-sm-5 position-relative">
-                                            <label for="regProductNombre" className="form-label">Nombre</label>
+                                        <div className="col-sm-6 position-relative">
+                                            <label htmlFor="regProductNombre" className="form-label">Nombre</label>
                                             <div className="input-group justify-content-center">
                                                 <span className="input-group-text" id="inputGroupPrepend">
-                                                    <img src={iconUser} className="Login-content-form-icon" alt="icono user" />
+                                                    <img src={iconUser} className="producto-content-form-icon" alt="icono user" />
                                                 </span>
                                                 <input type="text" onChange={this.handleChange.bind(this, "regProductNombre")} value={this.state.fields["regProductNombre"]} className="form-control" id="regProductNombre" name="regProductNombre" aria-describedby="inputGroupPrepend" placeholder="Escriba el nombre del producto" required />
                                             </div>
@@ -157,8 +215,29 @@ class AgregarProducto extends React.Component {
                                                 <span style={{ color: "red" }}>{this.state.errors["regProductNombre"]}</span>
                                             </div>
                                         </div>
+                                        <div className="col-sm-6 position-relative">
+                                            <label htmlFor="regProductCategoria" className="form-label">Categoria</label>
+                                            <div className="input-group justify-content-center">
+                                                <span className="input-group-text">
+                                                    <img src={iconUser} className="producto-content-form-icon" alt="icono"/>
+                                                </span>
+                                                <select className="form-select" id="regProductCategoria" onChange={this.handleChange.bind(this, "regProductCategoria")} value={this.state.fields["regProductCategoria"]} required >
+                                                    <option value="" selected>Seleccione la categoria</option>
+                                                    {this.state.categorias.map((cat) => {
+                                                        return (
+                                                            <option value={cat._id}>{cat.nombre_categoria}</option>
+                                                        )
+                                                        
+                                                    })}
+                                                    
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <span style={{ color: "red" }}>{this.state.errors["regProductCategoria"]}</span>
+                                            </div>
+                                        </div>
                                         <div className="col-sm-5 position-relative">
-                                            <label for="regProductPrecio" className="form-label">Precio</label>
+                                            <label htmlFor="regProductPrecio" className="form-label">Precio</label>
                                             <div className="input-group has-validation  justify-content-center">
                                                 <span className="input-group-text" id="inputGroupPrepend">
                                                     $
@@ -170,19 +249,47 @@ class AgregarProducto extends React.Component {
                                             </div>
                                         </div>
                                         <div className="col-sm-2 position-relative">
-                                            <label for="regProductCantidad" className="form-label">Cantidad</label>
+                                            <label htmlFor="regProductCantidad" className="form-label">Cantidad</label>
                                             <div className="input-group has-validation  justify-content-center">
+                                                <span className="input-group-text" id="inputGroupPrepend">
+                                                    #
+                                                </span>
                                                 <input type="number" onChange={this.handleChange.bind(this, "regProductCantidad")} value={this.state.fields["regProductCantidad"]} className="form-control" id="regProductCantidad" name="regProductCantidad" aria-describedby="inputGroupPrepend" placeholder="Escriba la cantidad total del producto" required />
                                             </div>
                                             <div>
                                                 <span style={{ color: "red" }}>{this.state.errors["regProductCantidad"]}</span>
                                             </div>
                                         </div>
-                                        <div className="col-sm-12 position-relative">
-                                            <label for="regProductDesc" className="form-label">Descripción</label>
-                                            <textarea className="form-control" onChange={this.handleChange.bind(this, "regProductDesc")} value={this.state.fields["regProductDesc"]} id="validationTextarea" name="regProductDesc" placeholder="Agregue una descripcion del producto" required></textarea>
+                                        <div className="col-sm-5 position-relative">
+                                            <label htmlFor="regProductDisponible" className="form-label">Disponible</label>
+                                            <div className="input-group justify-content-center">
+                                                <span className="input-group-text">
+                                                    <img src={iconUser} className="producto-content-form-icon" alt="icono"/>
+                                                </span>
+                                                <select className="form-select" id="regProductDisponible" onChange={this.handleChange.bind(this, "regProductDisponible")} value={this.state.fields["regProductDisponible"]} required >
+                                                    <option value="" selected>Seleccione el estado del producto</option>
+                                                    <option value="true">Disponible</option>
+                                                    <option value="false">No disponible</option>
+                                                </select>
+                                            </div>
                                             <div>
-                                                <span style={{ color: "red" }}>{this.state.errors["regProductDesc"]}</span>
+                                                <span style={{ color: "red" }}>{this.state.errors["regProductDisponible"]}</span>
+                                            </div>
+                                        </div>
+                                        <div className="col-sm-12 position-relative">
+                                            <div className="input-group mb-3">
+                                                <label className="input-group-text" for="regProductImagen">Imagen</label>
+                                                <input type="file" className="form-control" onChange={this.handleChange.bind(this, "regProductImagen")} id="regProductImagen" name="regProductImagen"/>
+                                            </div>
+                                            <div>
+                                                <span style={{ color: "red" }}>{this.state.errors["regProductImagen"]}</span>
+                                            </div>
+                                        </div>
+                                        <div className="col-sm-12 position-relative">
+                                            <label htmlFor="regProductDescripcion" className="form-label">Descripción</label>
+                                            <textarea className="form-control" onChange={this.handleChange.bind(this, "regProductDescripcion")} value={this.state.fields["regProductDescripcion"]} id="validationTextarea" name="regProductDescripcion" placeholder="Agregue una descripcion del producto" required></textarea>
+                                            <div>
+                                                <span style={{ color: "red" }}>{this.state.errors["regProductDescripcion"]}</span>
                                             </div>
                                         </div>
                                         
@@ -214,8 +321,11 @@ class AgregarProducto extends React.Component {
                                         <tr>
                                             <th scope="col">#</th>
                                             <th scope="col">Nombre</th>
-                                            <th scope="col">Cantidad</th>
+                                            <th scope="col">Categoria</th>
                                             <th scope="col">Precio</th>
+                                            <th scope="col">Cantidad</th>
+                                            <th scope="col">Disponible</th>
+                                            <th scope="col">Descripcion</th>
                                             <th scope="col" colSpan="2">Acciones</th>
                                         </tr>
                                     </thead>

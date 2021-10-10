@@ -11,7 +11,9 @@ exports.addVenta=(req, res) => {
   const productoAdd =new Venta({
     nombreCliente:req.body.nombreCliente,
     producto:req.body.producto,
-    vendedor:req.body.vendedor
+    cantidad:req.body.cantidad,
+    nombreVendedor:req.body.nombreVendedor,
+    total:req.body.total
   })
   //metodo para guardar productos
   productoAdd.save().then((createdProduc)=>{

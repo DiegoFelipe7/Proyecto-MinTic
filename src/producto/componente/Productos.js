@@ -1,4 +1,4 @@
-const Producto=({producto})=>{
+const Producto=({producto, productos})=>{
   
     return(
       <div className="p-1 col">

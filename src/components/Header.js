@@ -25,23 +25,23 @@ class Header extends React.Component{
                         </div>
                     </div>
                 </div>
-                <div class="row justify-content-md-center"> 
-                    <div class="col-md-9">
-                        <ul class="nav nav-tabs">
-                            <li class="nav-item">
-                                <Link to="/" class="nav-link active">Inicio</Link>
+                <div className="row justify-content-md-center"> 
+                    <div className="col-md-9">
+                        <ul className="nav nav-tabs">
+                            <li className="nav-item">
+                                <Link to="/" className="nav-link active">Inicio</Link>
                             </li>
-                            <li class="nav-item">
-                                <Link to="/Ventas" class="nav-link">Gestion de Ventas</Link>
+                            <li className="nav-item">
+                                <Link to="/Ventas" className="nav-link">Gestion de Ventas</Link>
                             </li>
-                            <li class="nav-item">
-                                <Link to="/Usuarios" class="nav-link">Gestion de Usuarios</Link>
+                            <li className="nav-item">
+                                <Link to="/Usuarios" className="nav-link">Gestion de Usuarios</Link>
                             </li>
-                            <li class="nav-item">
-                                <Link to="/Productos" class="nav-link">Gestion de productos</Link>
+                            <li className="nav-item">
+                                <Link to="/Productos" className="nav-link">Gestion de productos</Link>
                             </li>
-                            <li class="nav-item">
-                                <Link to="/login" class="nav-link">Form Login</Link>
+                            <li className="nav-item">
+                                <Link to="/login" className="nav-link">Form Login</Link>
                             </li>
                             
                         </ul>
