@@ -166,8 +166,9 @@ class AgregarProducto extends React.Component {
                 console.log(response);
             }
             add();
-            
+
             this.setState({alerta: "success"});
+            setTimeout(window.location.reload(), 5000);
         }else{
 	        this.setState({alerta: "danger"});
         }
