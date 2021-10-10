@@ -42,7 +42,7 @@ const ListaUsuarios = ({ usu }) => {
                         <th scope="row">{usuarios.id}</th>
                         <td>{usuarios.nombre_usu}</td>
                         <td>{usuarios.apellido_usu}</td>
-                        <td>{usuarios.tipo_identificacion_usu}</td>
+                        <td>{usuarios.tipo_documento_usu}</td>
                         <td>{usuarios.identificacion_usu}</td>
                         <td>{usuarios.rol_usu}</td>
                         <td colspan="2" className="col">
