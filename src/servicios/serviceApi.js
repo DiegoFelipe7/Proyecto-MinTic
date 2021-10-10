@@ -50,6 +50,18 @@ const callApi = async (url, met,value) => {
           return callApi("/ventas", 'POST', value);
         },
       },
+      Usuarios:{
+      list(){
+        return callApi("/Usuarios",null,null);
+      },
+      create(value) {
+        return callApi("/Usuarios", 'POST', value);
+      },
+        getById(value) {
+        return callApi("/Usuarios/"+value, null, null);
+      },
+
+    },
 
     
   };
