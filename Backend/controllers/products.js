@@ -1,3 +1,4 @@
+
 const Producto=require("../models/products");
 //metodo para listar productos
 exports.getProducts = (req, res) => {
