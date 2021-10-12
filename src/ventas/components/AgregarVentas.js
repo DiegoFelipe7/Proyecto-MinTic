@@ -9,25 +9,9 @@ import ListaVentas from './ListaVentas';
 import Alert from '../../components/Alert';
 import serviceApi from "../../servicios/serviceApi";
 import CallApi from "../../api";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 
-const listventas = [{
-    "id": 1,
-    "nombreComprador": "Diego",
-    "ndocument": 1061789456,
-    "producto": "Camisas",
-    "cantidad": 4,
-    "total": 60000,
-    "nombreVendedor": "Cristian"
-}, {
-    "id": 2,
-    "nombreComprador": "Diego",
-    "ndocument": 1061789456,
-    "producto": "Pantalones",
-    "cantidad": 2,
-    "total": 30000,
-    "nombreVendedor": "Manuel"
-}]
+
 
 class AgregarVenta extends React.Component {
 
@@ -40,24 +24,35 @@ class AgregarVenta extends React.Component {
             alerta: "",
             datos: [],
             products: [],
-            vendedores: [{
-                nombre_vendedor:"uno"
-            }]
+            vendedores: [],
+            usuarios: []
 
         }
         const getVendedires = async () => {
             const response = await serviceApi.products.list();
-            this.setState({ products: response});
-         }
-         getVendedires();
-     
+            this.setState({ products: response });
+        }
+        getVendedires();
+
+        const getUsuarios = async () => {
+            const response = await serviceApi.Usuarios.list();
+            // Filtra solo rol vendedores
+            const result = response.filter(z => z.rol_usu == "Vendedor");
+            this.setState({vendedores: result}); 
+        }
+        getUsuarios();
+
     }
-     //Extrae el object de la categoria.
-     filterProd(id){
+    //Extrae el object de la categoria.
+    filterProd(id) {
         const s = this.state.products.filter(x => x._id === id).map(z => z._id);
         return s;
     }
-    filterPrecioUni(id){
+    filterVend(id) {
+        const s = this.state.vendedores.filter(x => x._id === id).map(z => z._id);
+        return s;
+    }
+    filterPrecioUni(id) {
         const s = this.state.products.filter(x => x._id === id).map(z => z.precio_unitario);
         return s;
     }
@@ -117,7 +112,7 @@ class AgregarVenta extends React.Component {
                 formIsValid = false;
                 errors["regVentaCantidad"] = "Solo números mayores a 0.";
             }
-        }else{
+        } else {
             formIsValid = false;
             errors["regVentaCantidad"] = "Solo números mayores a 0.";
         }
@@ -146,7 +141,7 @@ class AgregarVenta extends React.Component {
             }
         }
 
-        this.setState({ errors: errors , alerta: "" });
+        this.setState({ errors: errors, alerta: "" });
         return formIsValid;
     }
 
@@ -155,30 +150,31 @@ class AgregarVenta extends React.Component {
         e.preventDefault();
         // const products = [];
         console.log(e)
-        const precioUni=this.filterPrecioUni(e["target"]["regVentaProducto"].value)
-        const cantidaad=e["target"]["regVentaCantidad"].value;
-        const total=precioUni*cantidaad
+        const precioUni = this.filterPrecioUni(e["target"]["regVentaProducto"].value)
+        const cantidaad = e["target"]["regVentaCantidad"].value;
+        const total = precioUni * cantidaad
         console.log(total)
         const venta = {
             nombreCliente: e["target"]["regVentaCliente"].value,
             producto: this.filterProd(e["target"]["regVentaProducto"].value),
             cantidad: e["target"]["regVentaCantidad"].value,
-            nombreVendedor: "6161fead2642102487992be3",
-            total: total}
-      
+            nombreVendedor: this.filterVend(e["target"]["regVentaVendedor"].value),
+            total: total
+        }
+
         const add = async () => {
-            const response = await serviceApi.ventas .create(venta);
+            const response = await serviceApi.ventas.create(venta);
             console.log(response);
         }
         add();
-        
-        if (this.handleValidation()) {
-        
 
-            this.setState({alerta: "success"});
+        if (this.handleValidation()) {
+
+
+            this.setState({ alerta: "success" });
 
         } else {
-            this.setState({alerta: "danger"});
+            this.setState({ alerta: "danger" });
         }
     }
 
@@ -205,8 +201,8 @@ class AgregarVenta extends React.Component {
                                 </div>
                                 <div className="row justify-content-center">
                                     <div className="col-sm-6">
-                                        {this.state.alerta == "success" ? <Alert tipo="success" mensaje="Venta agregada correctamente"/>: ""}
-                                        {this.state.alerta == "danger" ? <Alert tipo="danger" mensaje="Error al agregar la venta"/>: ""}
+                                        {this.state.alerta == "success" ? <Alert tipo="success" mensaje="Venta agregada correctamente" /> : ""}
+                                        {this.state.alerta == "danger" ? <Alert tipo="danger" mensaje="Error al agregar la venta" /> : ""}
                                     </div>
                                 </div><br />
                                 <form className="card" onSubmit={this.contactSubmit.bind(this)}>
@@ -215,7 +211,7 @@ class AgregarVenta extends React.Component {
                                             <label for="regVentaCliente" className="form-label">Nombre del cliente</label>
                                             <div className="input-group justify-content-center">
                                                 <span className="input-group-text">
-                                                    <img src={iconCliente} className="ventas-content-form-icon" alt="icono"/>
+                                                    <img src={iconCliente} className="ventas-content-form-icon" alt="icono" />
                                                 </span>
                                                 <input type="text" class="form-control" id="regVentaCliente" onChange={this.handleChange.bind(this, "regVentaCliente")} value={this.state.fields["regVentaCliente"]} placeholder="Escriba el nombre del cliente" required ></input>
                                             </div>
@@ -239,7 +235,7 @@ class AgregarVenta extends React.Component {
                                             <label for="regVentaProducto" className="form-label">Producto</label>
                                             <div className="input-group justify-content-center">
                                                 <span className="input-group-text">
-                                                    <img src={iconProducto} className="ventas-content-form-icon" alt="icono"/>
+                                                    <img src={iconProducto} className="ventas-content-form-icon" alt="icono" />
                                                 </span>
                                                 <select className="form-select" id="regVentaProducto" onChange={this.handleChange.bind(this, "regVentaProducto")} value={this.state.fields["regVentaProducto"]} required >
                                                     <option value="" selected>Seleccione un producto</option>
@@ -282,13 +278,13 @@ class AgregarVenta extends React.Component {
                                             <label for="regVentaVendedor" className="form-label">Vendedor</label>
                                             <div className="input-group justify-content-center">
                                                 <span className="input-group-text">
-                                                    <img src={iconVendedor} className="ventas-content-form-icon" alt="icono"/>
+                                                    <img src={iconVendedor} className="ventas-content-form-icon" alt="icono" />
                                                 </span>
                                                 <select className="form-select" id="regVentaVendedor" onChange={this.handleChange.bind(this, "regVentaVendedor")} value={this.state.fields["regVentaVendedor"]} required >
                                                     <option value="" selected>Seleccione el vendedor</option>
                                                     {this.state.vendedores.map((vend) => {
                                                         return (
-                                                            <option value={vend.nombre_vendedor}>{vend.nombre_vendedor}</option>
+                                                            <option value={vend._id}>{vend.nombre_usu}</option>
                                                         )
                                                     })}
                                                 </select>
@@ -300,7 +296,7 @@ class AgregarVenta extends React.Component {
                                         <div className="col-12 card-header">
                                             <div className="d-grid gap-1 d-sm-flex justify-content-center">
                                                 <button type="submit" className="btn btn-primary">
-                                                    <img src={iconIng} className="ventas-content-form-btn-icon" id="iconIng" alt="icono boton guardar"/>
+                                                    <img src={iconIng} className="ventas-content-form-btn-icon" id="iconIng" alt="icono boton guardar" />
                                                     Guardar
                                                 </button>
                                             </div>
@@ -332,7 +328,7 @@ class AgregarVenta extends React.Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <ListaVentas ventas={listventas} />
+                                            <ListaVentas />
                                         </tbody>
                                     </table>
                                 </div>
