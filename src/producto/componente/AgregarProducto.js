@@ -33,6 +33,8 @@ class AgregarProducto extends React.Component {
             fields: {},
             errors: {},
            alerta: "",
+           alertaMensaje: "",
+           creado: false,
            categorias: []
         };
 
@@ -163,22 +165,27 @@ class AgregarProducto extends React.Component {
             
             const add = async () => {
                 const response = await serviceApi.products.create(producto);
-                console.log(response);
+                this.setState({creado: response});
             }
             add();
 
-            this.setState({alerta: "success"});
-            setTimeout(window.location.reload(), 5000);
+            setTimeout(() => {
+                if(this.state.creado){
+                    this.setState({alerta: "success", alertaMensaje: "Agregado correctamente"});
+                    setTimeout(() => window.location.reload(), 2200);
+                }else{
+                    this.setState({alerta: "danger", alertaMensaje: "No fue posible agregar el producto, intentelo mas tarde"});
+                }
+            }, 900);
         }else{
-	        this.setState({alerta: "danger"});
+	        this.setState({alerta: "danger", alertaMensaje: "Error al agregar, verifique los campos."});
         }
-
     }
 
     handleChange(field, e) {
         let fields = this.state.fields;
         fields[field] = e.target.value;
-        this.setState({ fields, alerta: ""});
+        this.setState({ fields, alerta: "", alertaMensaje: ""});
     }
 
     render() {
@@ -198,8 +205,7 @@ class AgregarProducto extends React.Component {
                                 </div>
                                 <div className="row justify-content-center">
                                     <div className="col-sm-6">
-                                        {this.state.alerta == "success" ? <Alert tipo="success" mensaje="Producto agregado correctamente"/>: ""}
-                                        {this.state.alerta == "danger" ? <Alert tipo="danger" mensaje="Error al agregar el producto"/>: ""}
+                                        {this.state.alerta ? <Alert tipo={this.state.alerta} mensaje={this.state.alertaMensaje}/>: ""}
                                     </div>
                                 </div><br />
                                 <form className="card" onSubmit={this.contactSubmit.bind(this)} action="../api/products" type="POST">

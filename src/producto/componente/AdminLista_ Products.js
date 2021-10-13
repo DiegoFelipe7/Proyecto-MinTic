@@ -19,6 +19,7 @@ const AdminLista_Products = ({ p }) => {
         setValue( ( value +  1 ) )
         console.log("ELIMINADO", idSeleccionado,newList)
     };
+
     const [ listProductos, setListProductos ] = useState([]);
     useEffect(() => {
         const fetchData = async () => {
@@ -28,14 +29,14 @@ const AdminLista_Products = ({ p }) => {
     
         fetchData();
       }, []);
-    
+
+      var c=1;//Contador
     return (
-        
         listProductos.map((prod)=>(
         <tr>
-            <th scope="row">1</th>
+            <th scope="row">{c++}</th>
             <td>{prod.nombre_producto}</td>
-            <td>{prod.categoria}</td>
+            <td>{prod.categoria.nombre_categoria}</td>
             <td>{prod.precio_unitario}</td>
             <td>{prod.cantidad_producto}</td>
             <td>{prod.disponible === true ? "Si":"No"}</td>

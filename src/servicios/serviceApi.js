@@ -8,10 +8,8 @@ const callApi = async (url, met,value) => {
             })
         });
         
-        fetch(r)
-            .then(res => res.json())
-            .then(res => console.log(res));
-        return r;
+        const respuesta = await fetch(r).then(res => res.json());
+        return respuesta;
     }else{
         const response = await fetch("http://localhost:3001/api" + url);
         const data = await response.json();
@@ -49,6 +47,9 @@ const callApi = async (url, met,value) => {
         create(value) {
           return callApi("/ventas", 'POST', value);
         },
+        getById(value) {
+          return callApi("/ventas/"+value, null, null);
+        }
       },
       Usuarios:{
       list(){
