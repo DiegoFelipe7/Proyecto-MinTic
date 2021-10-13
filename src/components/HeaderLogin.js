@@ -31,7 +31,7 @@ const HeaderLogin=({carrito}) =>{
                     <img src={iconUser} className="header-icon"></img>
                 </div>
                 <div className="col-2 offset-1">
-                    <button className="btn btn-outline-danger btn-sm" onClick={() => localStorage.setItem("isLogged", false)}>Salir</button>
+                    <button className="btn btn-outline-danger btn-sm" onClick={() => {localStorage.setItem("isLogged", false); setTimeout(window.location.reload(), 1000);}}>Salir</button>
                 </div>
 
             </div>
@@ -40,7 +40,7 @@ const HeaderLogin=({carrito}) =>{
         return(
             <div className="row justify-content-end">
                 <div className="col">
-                    <button className="btn btn-outline-success btn-sm" onClick={() => localStorage.setItem("isLogged", true)}>Iniciar Sesion</button>
+                    <button className="btn btn-outline-success btn-sm" onClick={() => {localStorage.setItem("isLogged", true); setTimeout(window.location.reload(), 1000);}}>Iniciar Sesion</button>
                 </div>
             </div>
         );
