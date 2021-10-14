@@ -1,61 +1,51 @@
 import React,{useState, useEffect} from "react";
-import UpdateVentas from './UpdateVentas';
 import serviceApi from "../../servicios/serviceApi";
 import { Link } from "react-router-dom";
+import api from "../../servicios/serviceApi";
 const ListaVentas = () => {
     const  [ value , setValue ]  = useState (1);
     const [ Ventas, setListVentas ] = useState([]);
     const [ products, setProducts ] = useState([]);
-    const [ users, setUsers ] = useState([]);
+    const [ usuarios, setUsers ] = useState([]);
+
     useEffect(() => {
         const fetchData = async () => {
           const response = await serviceApi.ventas.list();
-          const respUser = await serviceApi.Usuarios.list();
+          const usuarios = await serviceApi.Usuarios.list();
           const resproducts = await serviceApi.products.list();
           setListVentas(response);
           setProducts(resproducts);
-          setUsers(respUser)
+          setUsers(usuarios)
         };
     
         fetchData();
       }, []);
-      
-
-    const EliminarItem = idSeleccionado => {
-        // const newList = Ventas.filter((item) => item.id !== idSeleccionado)
-        // Ventas.splice(0, Ventas.length);
-        // newList.map((newVenta)=>{
-        //     Ventas.push({
-        //         id: newVenta.id,
-        //         producto: newVenta.producto,
-        //         cantidad: newVenta.cantidad,
-        //         nombreVendedor: newVenta.nombreVendedor,
-        //         nombreComprador: newVenta.nombreComprador,
-        //         total:newVenta.total,
-        //     })
-        // })
-        setValue( ( value +  1 ) )
-        // console.log("ELIMINADO", idSeleccionado,newList)
+    
+    const EliminarVenta = (event)=> {
+        const id=event.target.id;
+        api.ventas.delete(id);
+        console.log(Ventas);
+        const newVenta=Ventas.filter((venta)=>venta._id!==id);
+        setListVentas([...newVenta])    
     }
-    const UpdateItem=(idSeleccionado)=>{
-        const lista = Ventas.filter((item) => item.id == idSeleccionado);   
-    }
+    // const UpdateItem=(idSeleccionado)=>{
+    //     const lista = Ventas.filter((item) => item.id == idSeleccionado);   
+    // }
  
 
     return (
         
         Ventas.map((vent) => (    
              
-            <tr>
-            <th scope="row">{vent.id}</th>
+            <tr key={vent._id}>
             <td>{vent.nombreCliente}</td>
             <td>{vent.producto}</td>
             <td>{vent.cantidad}</td>        
             <td>{vent.nombreVendedor}</td>                   
             <td>{vent.total}</td>
-            <td colspan="2" className="col">
-                <Link to="/updateVentas" ><button className="btn btn-warning btn-sm" onClick={()=>UpdateItem(vent.id)}>Editar</button></Link> 
-                <button type="button"  className="btn btn-danger btn-sm" onClick={() => EliminarItem(vent.id)}> Eliminar</button>
+            <td colSpan="2" className="col">
+                <Link to="/updateVentas" ><button className="btn btn-warning btn-sm" >Editar</button></Link> 
+                <button type="button"  className="btn btn-danger btn-sm" id={vent._id} onClick={EliminarVenta}> Eliminar</button>
             </td>
             </tr>
         ))
