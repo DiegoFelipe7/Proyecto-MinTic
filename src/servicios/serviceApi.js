@@ -42,14 +42,26 @@ const callApi = async (url, met,value) => {
         return callApi("/categoria/"+value, null, null);
       }
     },
-      ventas: {
+    ventas: {
         list() {
           return callApi("/ventas", null, null);
         },
         create(value) {
           return callApi("/ventas", 'POST', value);
         },
-      },
+        delete(value) {
+          return callApi("/ventas/"+value, 'DELETE', null);
+          // return callApi(`/ventas/${id}`, {
+          //   method: "DELETE",
+          // });
+        },
+        edit(venta) {
+          return callApi(`/ventas/${venta._id}`, {
+            method: "PUT",
+            body: JSON.stringify(venta),
+          });
+        },
+    },
       Usuarios:{
       list(){
         return callApi("/Usuarios",null,null);
@@ -57,7 +69,7 @@ const callApi = async (url, met,value) => {
       create(value) {
         return callApi("/Usuarios", 'POST', value);
       },
-        getById(value) {
+      getById(value) {
         return callApi("/Usuarios/"+value, null, null);
       },
 

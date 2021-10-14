@@ -16,7 +16,7 @@ const ventas = [{
     "nombreVendedor": "Manuel Messi",
     "total": 15000
 }]
-const UpdateVentas=({info})=> {
+const UpdateVentas=({ventas, setVentas})=> {
     /*const  [ value , setValue ]  = useState ({
         id:info.map((dato)=>(dato.id)),
         producto:info.map((dato)=>(dato.producto)),
