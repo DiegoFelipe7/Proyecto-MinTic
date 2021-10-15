@@ -9,4 +9,6 @@ router.delete("/:id", VentaController.deleteVenta)
 router.get("/disponibles", VentaController.getVentaDisponible);
 router.get("/:id", VentaController.getVentaId);
 router.put("/:id", VentaController.editVenta);
+router.delete("/:id", VentaController.deleteVenta);
+
 module.exports = router;

@@ -13,7 +13,7 @@ function Lista_Productos(){
     
         fetchData();
     }, []);
-        
+
     return(
         <div className="row">
             { productos.map((producto)=>(<Producto productos={productos} producto={producto}/>))}
