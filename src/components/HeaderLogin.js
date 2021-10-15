@@ -1,47 +1,69 @@
 import React, {useState, useEffect} from "react";
 import { Link } from "react-router-dom";
 import iconUser from '../img/icon-user.svg';
+import GoogleLogin from 'react-google-login';
 import iconCarrito from '../img/icon-carrito.svg';
-
 const HeaderLogin=({carrito}) =>{
     carrito = 3;
     const [loggIn, setLoggIn] = useState(false);
     useEffect(() => {
-        const isLogged = localStorage.getItem("isLogged");
+        const token = localStorage.getItem("token");
     
-        if (isLogged === null) {
-          localStorage.setItem("isLogged", false);
+        if (token === null) {
           setLoggIn(false);
         } else {
-          setLoggIn(isLogged === "true");
+          setLoggIn(true);
         }
-      }, []);
-    if(localStorage.getItem("isLogged") === "true"){
+    }, []);
+    if(loggIn === true){
         return(
-            <div className="row justify-content-start">
-                <div className="col-1">
+            <React.Fragment>
+                
+                <li className="nav-item">
+                    <Link to="/" className="nav-link active">Inicio</Link>
+                </li>
+                <li className="nav-item">
+                    <Link to="/Ventas" className="nav-link">Gestion de Ventas</Link>
+                </li>
+                <li className="nav-item">
+                    <Link to="/Usuarios" className="nav-link">Gestion de Usuarios</Link>
+                </li>
+                <li className="nav-item">
+                    <Link to="/Productos" className="nav-link">Gestion de productos</Link>
+                </li>
+                <li className="nav-item">
+                    <Link to="/login" className="nav-link">Form Login</Link>
+                </li>
+                <li className="nav-item" style={{marginLeft:'20px'}}>
                     <Link to="/carrito" className="position-relative">
-                        <img src={iconCarrito} className="header-icon"></img>
+                        <img src={iconCarrito} alt="..." className="header-icon"></img>
                         <span className="position-absolute top-0 start-80 translate-middle badge rounded-pill bg-danger">
                             {carrito}
                         </span>
                     </Link>
-                </div>
-                <div className="col-1">
-                    <img src={iconUser} className="header-icon"></img>
-                </div>
-                <div className="col-2 offset-1">
-                    <button className="btn btn-outline-danger btn-sm" onClick={() => {localStorage.setItem("isLogged", false); setTimeout(window.location.reload(), 1000);}}>Salir</button>
-                </div>
-
-            </div>
+                </li>             
+                <li className="nav-item" style={{marginLeft:'50px'}}>
+                    <button className="btn btn-outline-danger btn-sm" onClick={() => {localStorage.removeItem('token'); setTimeout(window.location.reload(), 1000);}}>Salir</button>
+                </li>                           
+            </React.Fragment>
         );
     }else{
         return(
-            <div className="row justify-content-end">
-                <div className="col">
-                    <button className="btn btn-outline-success btn-sm" onClick={() => {localStorage.setItem("isLogged", true); setTimeout(window.location.reload(), 1000);}}>Iniciar Sesion</button>
-                </div>
+            <div>            
+                {/* <button className="btn btn-outline-success btn-sm" onClick={() => {localStorage.setItem("isLogged", true); setTimeout(window.location.reload(), 1000);}}>
+                    Iniciar Sesion
+                </button> */}
+                <GoogleLogin
+                    clientId="882471923244-2s7j8hlt0kftg4qlv00mm5rldl1camul.apps.googleusercontent.com"
+                    buttonText="Iniciar sesion"
+                    onSuccess={(res) => { 
+                    setTimeout(window.location.reload(), 1000); 
+                    localStorage.setItem("token", res.tokenId);
+                    console.log(res)
+                    }}
+                    onFailure={(err)=>{console.log(err)}}
+                    cookiePolicy={'single_host_origin'}
+                />
             </div>
         );
     }

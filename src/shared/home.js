@@ -10,18 +10,13 @@ function home() {
       <div className="row">
           <Header />
       </div>
-
-
       <div className="row justify-content-center">
         <div className="p-3 col col-sm-7">
-          <Lista_Productos/>
+          <Lista_Productos />
         </div>
       </div>
-
-
-
-      <footer>
-        <div className="row justify-content-center">
+      <footer >
+        <div className="row justify-content-center ">
           <div className="col col-sm-3">
             &copy; Todos los derechos reservados.
           </div>
