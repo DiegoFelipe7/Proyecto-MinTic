@@ -1,5 +1,8 @@
 import './productos.css';
-import iconUser from '../../img/icon-user.svg';
+import iconProducto from '../../img/icon-producto.png';
+import iconImagen from '../../img/icon-imagen.png';
+import iconProductoDisponible from '../../img/icon-productoDisponible.png';
+import iconCategorias from '../../img/icon-categorias.png';
 import iconIng from '../../img/icon-btn-ingresar.svg';
 import React, {useState, useEffect} from "react";
 import 'bootstrap/dist/css/bootstrap.css';
@@ -7,22 +10,6 @@ import Header from '../../components/Header';
 import AdminLista_Products from './AdminLista_ Products';
 import Alert from '../../components/Alert';
 import serviceApi from "../../servicios/serviceApi";
-
-const products = [{
-    "id": 1,
-    "nombreP": "Pantalones",
-    "cantidad": 3,
-    "precio": 15000,
-    "image":"https://m.media-amazon.com/images/I/61qMt8YrVtL._AC_UY445_.jpg"
-    
-},
-{
-    "id": 2,
-    "nombreP": "Camisas",
-    "cantidad": 2,
-    "precio": 10000,
-    "image":"https://contents.mediadecathlon.com/p1786958/k$2b0a8a97ea3b1154f2f3734009451fe2/pantalon-de-montana-y-trekking-viaje-de-hombre-forclaz-travel-100-gris.jpg?&f=452x452"
-}];
 
 class AgregarProducto extends React.Component {
 
@@ -134,7 +121,7 @@ class AgregarProducto extends React.Component {
         }
 
         //Imagen
-        if (!fields["regProductImagen"]) {
+        /*if (!fields["regProductImagen"]) {
             formIsValid = false;
             errors["regProductImagen"] = "Campo obligatorio.";
         }
@@ -142,7 +129,7 @@ class AgregarProducto extends React.Component {
         if (!fields["regProductImagen"].match(/\.(jpg|jpeg|png|gif|svg)$/)) {
             formIsValid = false;
             errors["regProductImagen"] = "Tipo de imagen permitidos jpg, jpeg, png, gif, svg.";
-        }
+        }*/
 
         this.setState({ errors: errors , alerta: ""});
         return formIsValid;
@@ -214,7 +201,7 @@ class AgregarProducto extends React.Component {
                                             <label htmlFor="regProductNombre" className="form-label">Nombre</label>
                                             <div className="input-group justify-content-center">
                                                 <span className="input-group-text" id="inputGroupPrepend">
-                                                    <img src={iconUser} className="producto-content-form-icon" alt="icono user" />
+                                                    <img src={iconProducto} className="producto-content-form-icon" alt="icono producto" />
                                                 </span>
                                                 <input type="text" onChange={this.handleChange.bind(this, "regProductNombre")} value={this.state.fields["regProductNombre"]} className="form-control" id="regProductNombre" name="regProductNombre" aria-describedby="inputGroupPrepend" placeholder="Escriba el nombre del producto" required />
                                             </div>
@@ -226,7 +213,7 @@ class AgregarProducto extends React.Component {
                                             <label htmlFor="regProductCategoria" className="form-label">Categoria</label>
                                             <div className="input-group justify-content-center">
                                                 <span className="input-group-text">
-                                                    <img src={iconUser} className="producto-content-form-icon" alt="icono"/>
+                                                    <img src={iconCategorias} className="producto-content-form-icon" alt="icono"/>
                                                 </span>
                                                 <select className="form-select" id="regProductCategoria" onChange={this.handleChange.bind(this, "regProductCategoria")} value={this.state.fields["regProductCategoria"]} required >
                                                     <option value="" selected>Seleccione la categoria</option>
@@ -271,7 +258,7 @@ class AgregarProducto extends React.Component {
                                             <label htmlFor="regProductDisponible" className="form-label">Disponible</label>
                                             <div className="input-group justify-content-center">
                                                 <span className="input-group-text">
-                                                    <img src={iconUser} className="producto-content-form-icon" alt="icono"/>
+                                                    <img src={iconProductoDisponible} className="producto-content-form-icon" alt="icono"/>
                                                 </span>
                                                 <select className="form-select" id="regProductDisponible" onChange={this.handleChange.bind(this, "regProductDisponible")} value={this.state.fields["regProductDisponible"]} required >
                                                     <option value="" selected>Seleccione el estado del producto</option>
@@ -284,9 +271,12 @@ class AgregarProducto extends React.Component {
                                             </div>
                                         </div>
                                         <div className="col-sm-12 position-relative">
-                                            <div className="input-group mb-3">
-                                                <label className="input-group-text" for="regProductImagen">Imagen</label>
-                                                <input type="file" className="form-control" onChange={this.handleChange.bind(this, "regProductImagen")} id="regProductImagen" name="regProductImagen"/>
+                                            <label htmlFor="regProductImagen" className="form-label">Url de la imagen</label>
+                                            <div className="input-group justify-content-center">
+                                                <span className="input-group-text" id="inputGroupPrepend">
+                                                    <img src={iconImagen} className="producto-content-form-icon" alt="icono user" />
+                                                </span>
+                                                <input type="text" onChange={this.handleChange.bind(this, "regProductImagen")} value={this.state.fields["regProductImagen"]} className="form-control" id="regProductImagen" name="regProductImagen" aria-describedby="inputGroupPrepend" placeholder="Escriba la url de la imagen del producto " required />
                                             </div>
                                             <div>
                                                 <span style={{ color: "red" }}>{this.state.errors["regProductImagen"]}</span>
@@ -323,23 +313,7 @@ class AgregarProducto extends React.Component {
                                 </div>
                             </div>
                             <div className="table-responsive">
-                                <table className="table table-striped table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Nombre</th>
-                                            <th scope="col">Categoria</th>
-                                            <th scope="col">Precio</th>
-                                            <th scope="col">Cantidad</th>
-                                            <th scope="col">Disponible</th>
-                                            <th scope="col">Descripcion</th>
-                                            <th scope="col" colSpan="2">Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <AdminLista_Products prod={products} />
-                                    </tbody>
-                                </table>
+                                <AdminLista_Products/>
                             </div>
                         </div>
                     </div>

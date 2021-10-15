@@ -55,3 +55,35 @@ exports.getProductoDisponible=(req, res) => {
     res.status(200).json(productoResult);
   });
 }
+
+//método eliminar
+exports.deleteProduct = (req, res) => {
+  const id = req.params.id;
+
+  Producto.deleteOne({ _id: id }).then((productoResult) => {
+    res.status(200).json("El producto se eliminó satisfactoriamente.");
+  });
+};
+
+//método actualizar
+exports.editProduct = (req, res) => {
+
+  const productoUpd = new Producto({
+    _id: req.body._id,
+    nombre_producto: req.body.nombre_producto,
+    descripcion: req.body.descripcion,
+    precio_unitario: req.body.precio_unitario,
+    cantidad_producto: req.body.cantidad_producto,
+    imagen: req.body.imagen,
+    categoria: req.body.categoria,
+    disponible: req.body.disponible,
+  });
+
+  Producto.findByIdAndUpdate(req.body._id, productoUpd).then((productoResult) => {
+    if (productoResult) {
+      res.status(200).json(productoResult);
+    } else {
+      res.status(404).json("Producto no encontrado");
+    }
+  });
+};
