@@ -208,7 +208,7 @@ class AgregarVenta extends React.Component {
                                 <form className="card" onSubmit={this.contactSubmit.bind(this)}>
                                     <div className="row g-2 p-2">
                                         <div className="col-sm-5 position-relative">
-                                            <label for="regVentaCliente" className="form-label">Nombre del cliente</label>
+                                            <label  className="form-label">Nombre del cliente</label>
                                             <div className="input-group justify-content-center">
                                                 <span className="input-group-text">
                                                     <img src={iconCliente} className="ventas-content-form-icon" alt="icono" />
@@ -220,7 +220,7 @@ class AgregarVenta extends React.Component {
                                             </div>
                                         </div>
                                         <div className="col-sm-3 position-relative">
-                                            <label for="regVentaDocumento" className="form-label">Número de documento</label>
+                                            <label  className="form-label">Número de documento</label>
                                             <div className="input-group justify-content-center">
                                                 <span className="input-group-text">
                                                     #
@@ -232,7 +232,7 @@ class AgregarVenta extends React.Component {
                                             </div>
                                         </div>
                                         <div className="col-sm-4 position-relative">
-                                            <label for="regVentaProducto" className="form-label">Producto</label>
+                                            <label className="form-label">Producto</label>
                                             <div className="input-group justify-content-center">
                                                 <span className="input-group-text">
                                                     <img src={iconProducto} className="ventas-content-form-icon" alt="icono" />
@@ -251,7 +251,7 @@ class AgregarVenta extends React.Component {
                                             </div>
                                         </div>
                                         <div className="col-sm-5 position-relative">
-                                            <label for="regVentaCantidad" className="form-label">Cantidad</label>
+                                            <label  className="form-label">Cantidad</label>
                                             <div className="input-group justify-content-center">
                                                 <span className="input-group-text">
                                                     #
@@ -263,19 +263,19 @@ class AgregarVenta extends React.Component {
                                             </div>
                                         </div>
                                         <div className="col-sm-3 position-relative">
-                                            <label for="regVentaTotal" className="form-label">Total</label>
+                                            <label  className="form-label">Total</label>
                                             <div className="input-group justify-content-center">
                                                 <span className="input-group-text">
                                                     $
                                                 </span>
-                                                <input type="number" class="form-control" id="regVentaTotal" onChange={this.handleChange.bind(this, "regVentaTotal")} value="12230" disabled readonly></input>
+                                                <input type="number" class="form-control" id="regVentaTotal" onChange={this.handleChange.bind(this, "regVentaTotal")} value="12230" disabled readOnly></input>
                                             </div>
                                             <div>
                                                 <span style={{ color: "red" }}>{this.state.errors["regVentaTotal"]}</span>
                                             </div>
                                         </div>
                                         <div className="col-sm-4 position-relative">
-                                            <label for="regVentaVendedor" className="form-label">Vendedor</label>
+                                            <label  className="form-label">Vendedor</label>
                                             <div className="input-group justify-content-center">
                                                 <span className="input-group-text">
                                                     <img src={iconVendedor} className="ventas-content-form-icon" alt="icono" />
@@ -318,7 +318,7 @@ class AgregarVenta extends React.Component {
                                     <table className="table table-striped table-hover">
                                         <thead>
                                             <tr>
-                                                <th scope="col">#</th>
+                                             
                                                 <th scope="col">Cliente</th>
                                                 <th scope="col">Producto</th>
                                                 <th scope="col">Cant.</th>
@@ -328,7 +328,7 @@ class AgregarVenta extends React.Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <ListaVentas />
+                                            <ListaVentas/>
                                         </tbody>
                                     </table>
                                 </div>

@@ -55,6 +55,17 @@ const api = {
     },
     getById(value) {
       return callApi("/ventas/"+value);
+    },
+    edit(value) {
+      return callApi("/ventas/"+value._id, {
+        method: "PUT",
+        body: JSON.stringify(value),
+      });
+    },
+    delete(value){
+      return callApi("/ventas/"+value, {
+        method: "DELETE",
+      });
     }
   },
   Usuarios:{
