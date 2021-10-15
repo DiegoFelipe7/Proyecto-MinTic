@@ -1,4 +1,7 @@
-import iconUser from '../../img/icon-user.svg';
+import iconProducto from '../../img/icon-producto.png';
+import iconImagen from '../../img/icon-imagen.png';
+import iconProductoDisponible from '../../img/icon-productoDisponible.png';
+import iconCategorias from '../../img/icon-categorias.png';
 import iconIng from '../../img/icon-btn-ingresar.svg';
 import 'bootstrap/dist/css/bootstrap.css';
 import React, {useState, useEffect} from "react";
@@ -14,6 +17,8 @@ class UpdateProd extends React.Component {
             fields: {},
             errors: {},
             alerta: "",
+            alertaMensaje: "",
+            actualizado: false,
             id: this.props.location.pathname.split('/')[2], //obtiene el id desde la url.
             updProductNombre: "",
             updProductCategoria: {},
@@ -40,7 +45,7 @@ class UpdateProd extends React.Component {
             this.setState({updProductCantidad: await response.cantidad_producto});
             this.setState({updProductDisponible: await response.disponible});
             this.setState({updProductDescripcion: await response.descripcion});
-            this.setState({updProductImagen: await response.imagen_producto});
+            this.setState({updProductImagen: await response.imagen});
         }
         getProduct();
     }
@@ -112,8 +117,32 @@ class UpdateProd extends React.Component {
         e.preventDefault();
         
         if (this.handleValidation()) {
-            this.setState({alerta: "success"});
-            setTimeout(window.location.replace("../Productos"), 1000);
+            const updProducto = {
+                _id: this.state.id,
+                nombre_producto: this.state.updProductNombre,
+                precio_unitario: this.state.updProductPrecio,
+                cantidad_producto: this.state.updProductCantidad,
+                descripcion: this.state.updProductDescripcion,
+                disponible: this.state.updProductDisponible,
+                imagen: this.state.updProductImagen,
+                categoria: this.state.updProductCategoria
+            };
+
+            const upd = async () => {
+                const response = await serviceApi.products.edit(updProducto);
+                this.setState({actualizado: response});
+            }
+            upd();
+
+            setTimeout(() => {
+                if(this.state.actualizado){
+                    this.setState({alerta: "success", alertaMensaje: "Agregado correctamente"});
+                    setTimeout(()=>window.location.replace("../Productos"), 1000);
+                }else{
+                    this.setState({alerta: "danger", alertaMensaje: "No fue posible agregar el producto, intentelo mas tarde"});
+                }
+            }, 900);
+            
         }else{
 	        this.setState({alerta: "danger"});
         }
@@ -123,7 +152,7 @@ class UpdateProd extends React.Component {
         let f = this.state.fields;
         f[field] = e.target.value;
         this.state[field] = e.target.value;
-        this.setState({ f, alerta: ""});
+        this.setState({ f, alerta: "", alertaMensaje: ""});
     }
     
     render(){
@@ -143,8 +172,7 @@ class UpdateProd extends React.Component {
                             </div>
                             <div className="row justify-content-center">
                                 <div className="col-sm-6">
-                                    {this.state.alerta == "success" ? <Alert tipo="success" mensaje="Producto actualizado correctamente"/>: ""}
-                                    {this.state.alerta == "danger" ? <Alert tipo="danger" mensaje="Error al actualizar el producto"/>: ""}
+                                {this.state.alerta ? <Alert tipo={this.state.alerta} mensaje={this.state.alertaMensaje}/>: ""}
                                 </div>
                             </div><br />
                             <form className="card" onSubmit={this.contactSubmit.bind(this)} action="" type="">
@@ -153,7 +181,7 @@ class UpdateProd extends React.Component {
                                         <label htmlFor="updProductNombre" className="form-label">Nombre</label>
                                         <div className="input-group justify-content-center">
                                             <span className="input-group-text" id="inputGroupPrepend">
-                                                <img src={iconUser} className="producto-content-form-icon" alt="icono user" />
+                                                <img src={iconProducto} className="producto-content-form-icon" alt="icono user" />
                                             </span>
                                             <input type="text" onChange={this.handleChange.bind(this, "updProductNombre")} value={this.state.updProductNombre}  className="form-control" id="updProductNombre" name="updProductNombre" aria-describedby="inputGroupPrepend" placeholder={this.state.nombre} required />
                                         </div>
@@ -165,7 +193,7 @@ class UpdateProd extends React.Component {
                                         <label htmlFor="updProductCategoria" className="form-label">Categoria</label>
                                         <div className="input-group justify-content-center">
                                             <span className="input-group-text">
-                                                <img src={iconUser} className="producto-content-form-icon" alt="icono"/>
+                                                <img src={iconCategorias} className="producto-content-form-icon" alt="icono"/>
                                             </span>
                                             <select className="form-select" id="updProductCategoria" onChange={this.handleChange.bind(this, "updProductCategoria")} required >
                                                 <option value={this.state.updProductCategoria._id} selected>{this.state.updProductCategoria.nombre_categoria}</option>
@@ -209,7 +237,7 @@ class UpdateProd extends React.Component {
                                         <label htmlFor="updProductDisponible" className="form-label">Disponible</label>
                                         <div className="input-group justify-content-center">
                                             <span className="input-group-text">
-                                                <img src={iconUser} className="producto-content-form-icon" alt="icono"/>
+                                                <img src={iconProductoDisponible} className="producto-content-form-icon" alt="icono"/>
                                             </span>
                                             <select className="form-select" id="updProductDisponible" onChange={this.handleChange.bind(this, "updProductDisponible")} required >
                                                 <option value={this.state.updProductDisponible} selected>{this.state.updProductDisponible === true ? "Disponible":"No disponible"}</option>
@@ -222,9 +250,12 @@ class UpdateProd extends React.Component {
                                         </div>
                                     </div>
                                     <div className="col-sm-12 position-relative">
-                                        <div className="input-group mb-3">
-                                            <label className="input-group-text" for="updProductImagen">Imagen</label>
-                                            <input type="file" className="form-control" onChange={this.handleChange.bind(this, "updProductImagen")} value={this.state.updProductImagen} id="updProductImagen" name="updProductImagen"/>
+                                        <label htmlFor="updProductImagen" className="form-label">Url de la imagen</label>
+                                        <div className="input-group justify-content-center">
+                                            <span className="input-group-text" id="inputGroupPrepend">
+                                                <img src={iconImagen} className="producto-content-form-icon" alt="icono user" />
+                                            </span>
+                                            <input type="text" onChange={this.handleChange.bind(this, "updProductImagen")} value={this.state.updProductImagen} className="form-control" id="updProductImagen" name="updProductImagen" aria-describedby="inputGroupPrepend" placeholder="Escriba la url de la imagen del producto " required />
                                         </div>
                                         <div>
                                             <span style={{ color: "red" }}>{this.state.errors["updProductImagen"]}</span>
