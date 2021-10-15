@@ -4,9 +4,10 @@ const venta=mongoose.Schema({
     nombreCliente:{type: String, required: true},
     producto:{ 
         type: mongoose.Schema.Types.ObjectId,
-        ref: "productos",
+        ref: "products",
         required: true,},
     cantidad:{type: Number, required: true},
+    documento:{type: Number, required: true},
     nombreVendedor:{ 
         type: mongoose.Schema.Types.ObjectId,
         ref: "usuarios",

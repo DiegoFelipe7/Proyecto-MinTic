@@ -1,10 +1,12 @@
 const Venta=require("../models/ventas");
-//metodo para listar productos
+//metodo para listar ventas
 exports.getVentas = (req, res) => {
-    Venta.find().then((ventaResult) => {
-      res.status(200).json(ventaResult)
+    Venta.find()
+    .populate("producto")
+    .populate("nombreVendedor")
+    .then((productResult) => {
+      res.status(200).json(productResult)
     })
-    //res.status(200).json("Hola a todos");
 };
 //creamos la instancia tipo producto
 exports.addVenta=(req, res) => {
@@ -12,13 +14,13 @@ exports.addVenta=(req, res) => {
     nombreCliente:req.body.nombreCliente,
     producto:req.body.producto,
     cantidad:req.body.cantidad,
+    documento:req.body.documento,
     nombreVendedor:req.body.nombreVendedor,
     total:req.body.total
   })
-  //metodo para guardar productos
+  //metodo para guardar ventas
   ventaAdd.save().then((createdVent)=>{
-    console.log(createdVent)
-    res.status(201).json("Creado exitosamente");
+    res.status(201).json(true);
   });
 }
 exports.getVentaId=(req, res)=>{
@@ -30,32 +32,39 @@ exports.getVentaId=(req, res)=>{
     }
   })
 }
-//metodo para filtrar productos por una propiedad especifica
+//metodo para filtrar ventas por una propiedad especifica
 exports.getVentaDisponible=(req, res) => {
   Venta.find({disponible:true}).then((ventaResult) => {
     res.status(200).json(ventaResult);
   });
 }
-exports.deleteVenta=(req, res) => {
-  const id=req.params.id;
-  console.log(id);
+//método eliminar
+exports.deleteVenta = (req, res) => {
+  const id = req.params.id;
+
   Venta.deleteOne({ _id: id }).then((ventaResult) => {
-    res.status(200).json("Venta eliminada");
+    res.status(200).json("La venta se eliminó satisfactoriamente.");
   });
 };
 
+//método actualizar
 exports.editVenta = (req, res) => {
-  const id = req.params.id;
 
   const ventaUpd = new Venta({
-    _id: id,
-    nombreCliente:req.body.nombreCliente,
-    producto:req.body.producto,
-    cantidad:req.body.cantidad,
-    nombreVendedor:req.body.nombreVendedor,
-    total:req.body.total
+    _id: req.body._id,
+    nombreCliente: req.body.nombreCliente,
+    producto: req.body.producto,
+    cantidad: req.body.cantidad,
+    documento:req.body.documento,
+    nombreVendedor: req.body.nombreVendedor,
+    total: req.body.total,
   });
-  Venta.findByIdAndUpdate(id, ventaUpd).then((productoResult) => {
-    res.status(200).json("La venta se actualizó satisfactoriamente");
+
+  Venta.findByIdAndUpdate(req.body._id, ventaUpd).then((ventaResult) => {
+    if (ventaResult) {
+      res.status(200).json(ventaResult);
+    } else {
+      res.status(404).json("Venta no encontrado");
+    }
   });
 };

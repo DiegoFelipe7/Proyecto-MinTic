@@ -21,7 +21,7 @@ class AgregarProducto extends React.Component {
             errors: {},
            alerta: "",
            alertaMensaje: "",
-           creado: false,
+           creado: null,
            categorias: []
         };
 
@@ -161,7 +161,7 @@ class AgregarProducto extends React.Component {
                     this.setState({alerta: "success", alertaMensaje: "Agregado correctamente"});
                     setTimeout(() => window.location.reload(), 2200);
                 }else{
-                    this.setState({alerta: "danger", alertaMensaje: "No fue posible agregar el producto, intentelo mas tarde"});
+                    this.setState({alerta: "danger", alertaMensaje: "No fue posible agregar el producto, intentelo de nuevo más tarde"});
                 }
             }, 900);
         }else{

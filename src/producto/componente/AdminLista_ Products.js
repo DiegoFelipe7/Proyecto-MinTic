@@ -1,19 +1,17 @@
 import { Link } from "react-router-dom";
 import React,{useState, useEffect} from "react";
-import Alert from '../../components/Alert';
 import serviceApi from "../../servicios/serviceApi";
 
 const AdminLista_Products = () => {
     const  [ modal , setModal ]  = useState ();
     const  [ alerta , setAlerta ]  = useState ();
     const  [ alertaMensaje , setAlertaMensaje ]  = useState ();
+    const  [ value , setValue ]  = useState ();
+
     const functionModal = (show) => {
         setModal(show);
-        setAlerta("danger");
-        setAlertaMensaje("Producto eliminado correctamente");
     };
 
-    const  [ value , setValue ]  = useState ();
     const EliminarItem = idSeleccionado => {
         const fetchData = async () => {
             const response = await serviceApi.products.delete(idSeleccionado);
@@ -81,8 +79,8 @@ const AdminLista_Products = () => {
                         <td>{prod.disponible === true ? "Si":"No"}</td>
                         <td>{prod.descripcion}</td>
                         <td>
-                            <Link to={"/updateProd/"+prod._id} id={prod._id}><button type="button" className="btn btn-warning">Editar</button></Link>
-                            <button className="btn btn-danger" onClick={()=>{functionModal(true); setValue(prod._id); setAlertaMensaje("¿Seguro que desea eliminar el producto?");}}>Eliminar</button>
+                            <Link to={"/updateProd/"+prod._id}><button type="button" className="btn btn-warning">Editar</button></Link>
+                            <button className="btn btn-danger" onClick={()=>{functionModal(true); setValue(prod._id); setAlerta("danger"); setAlertaMensaje("¿Seguro que desea eliminar el producto?");}}>Eliminar</button>
                         </td>
                     </tr>
                 ))}
