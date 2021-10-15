@@ -109,7 +109,7 @@ class UpdateProd extends React.Component {
             errors["updProductImagen"] = "Tipo de imagen permitidos jpg, jpeg, png, gif, svg.";
         }*/
 
-        this.setState({ errors: errors , alerta: ""});
+        this.setState({ errors: errors , alerta: "", alertaMensaje: ""});
         return formIsValid;
     }
 
@@ -136,15 +136,15 @@ class UpdateProd extends React.Component {
 
             setTimeout(() => {
                 if(this.state.actualizado){
-                    this.setState({alerta: "success", alertaMensaje: "Agregado correctamente"});
+                    this.setState({alerta: "success", alertaMensaje: "Actualizado correctamente"});
                     setTimeout(()=>window.location.replace("../Productos"), 1000);
                 }else{
-                    this.setState({alerta: "danger", alertaMensaje: "No fue posible agregar el producto, intentelo mas tarde"});
+                    this.setState({alerta: "danger", alertaMensaje: "No fue posible actualizar el producto, intentelo mas tarde"});
                 }
             }, 900);
             
         }else{
-	        this.setState({alerta: "danger"});
+	        this.setState({alerta: "danger", alertaMensaje: "Error al actualizar, compruebe los campos"});
         }
     }
 
