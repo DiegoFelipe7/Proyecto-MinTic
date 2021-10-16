@@ -1,31 +1,15 @@
 import './usuarios.css';
 import iconCliente from '../../img/icon-cliente.png';
 import iconProducto from '../../img/icon-producto.png';
-import iconVendedor from '../../img/icon-vendedor.png';
+import icondocumento from '../../img/icono-documento.png';
 import iconIng from '../../img/icon-btn-ingresar.svg';
+import correo from '../../img/correo-electronico.png';
+import iconorol from '../../img/roles.png';
 import ListaUsuarios from './ListaUsuarios';
 import React from "react";
 import Header from '../../components/Header';
 import Alert from '../../components/Alert';
 import serviceApi from '../../servicios/serviceApi'
-
-const lista_usuarios = [{
-    "id": 1,
-    "nombre": "Manuel",
-    "apellido":"Diaz",
-    "tipo_identificacion":"Cedula",
-    "numero_documento":"123512",
-    "rol":"Vendendor"
-},
-{
-    "id": 2,
-    "nombre": "Juan",
-    "apellido":"Perez",
-    "tipo_identificacion":"Cedula",
-    "numero_documento":"6345323",
-    "rol":"administrador"
-}
-]
 
 class AgregarUsuario extends React.Component {
 
@@ -116,6 +100,30 @@ class AgregarUsuario extends React.Component {
                 errors["regUsuarioRol"] = "Seleccione una opción.";
             }
         }
+         //correo
+         if (!fields["regUsuarioRol"]) {
+            formIsValid = false;
+            errors["regUsuarioRol"] = "Campo obligatorio.";
+        }
+
+        if (typeof fields["regUsuarioRol"] !== "undefined") {
+            if (!fields["regUsuarioRol"] != "") {
+                formIsValid = false;
+                errors["regUsuarioRol"] = "Seleccione una opción.";
+            }
+        }
+        //estado
+        if (!fields["regUsuarioestado"]) {
+            formIsValid = false;
+            errors["regUsuarioestado"] = "Campo obligatorio.";
+        }
+
+        if (typeof fields["regUsuarioestado"] !== "undefined") {
+            if (!fields["regUsuarioestado"] != "") {
+                formIsValid = false;
+                errors["regUsuarioestado"] = "Seleccione una opción.";
+            }
+        }
 
         this.setState({ errors: errors, alerta: "" });
         return formIsValid;
@@ -124,28 +132,37 @@ class AgregarUsuario extends React.Component {
 
     contactSubmit(e) {
         e.preventDefault();
-        const usuarios={
+        
+        if (this.handleValidation()) {  
+        const usuar={
             nombre_usu: e["target"]["regUsuarioNombre"].value,
             apellido_usu: e["target"]["regUsuarioApellidos"].value,
             tipo_documento_usu: e["target"]["regUsuarioTipoId"].value,
             identificacion_usu: e["target"]["regUsuarioDocumento"].value,
             rol_usu: e["target"]["regUsuarioRol"].value,
+            email_usu: e["target"]["regUsuariocorreo"].value,
+            estado_activo : e["target"]["regUsuarioestado"].value,
         }
 
         const add = async () => {
-            const response = await serviceApi.Usuarios.create(usuarios);
-            console.log(response);
+            const response = await serviceApi.Usuarios.create(usuar);
+            this.setState({creado: response});
         }
         add();
-        
-        if (this.handleValidation()) {
+        setTimeout(() => {
+            if(this.state.creado){
+                this.setState({alerta: "success", alertaMensaje: "Agregado correctamente"});
+                setTimeout(() => window.location.reload(), 2200);
+            }else{
+                this.setState({alerta: "danger", alertaMensaje: "No fue posible agregar el usuario, intentelo de nuevo más tarde"});
+            }
+        }, 900);
         
 
-            this.setState({alerta: "success"});
-
-        } else {
-            this.setState({alerta: "danger"});
-        }
+    } else {
+        this.setState({alerta: "danger", alertaMensaje: "Error al agregar, verifique los campos."});
+    } 
+       
     }
 
     handleChange(field, e) {
@@ -171,11 +188,11 @@ class AgregarUsuario extends React.Component {
                                 </div>
                                 <div className="row justify-content-center">
                                     <div className="col-sm-6">
-                                        {this.state.alerta == "success" ? <Alert tipo="success" mensaje="Usuario agregado correctamente"/>: ""}
-                                        {this.state.alerta == "danger" ? <Alert tipo="danger" mensaje="Error al agregar el usuario"/>: ""}
-                                    </div>
+                                    <div className="col-sm-6">
+                                    {this.state.alerta ? <Alert tipo={this.state.alerta} mensaje={this.state.alertaMensaje}/>: ""}
+                                    </div></div>
                                 </div><br />
-                                <form className="card" onSubmit={this.contactSubmit.bind(this)}>
+                                <form className="card" onSubmit={this.contactSubmit.bind(this)} action="../api/Usuarios" type="POST">
                                     <div className="row g-2 p-2">
                                         <div className="col-sm-4 position-relative">
                                             <label for="regUsuarioNombre" className="form-label">Nombre del usuario</label>
@@ -205,13 +222,12 @@ class AgregarUsuario extends React.Component {
                                             <label for="regUsuarioTipoId" className="form-label">Tipo de identificación</label>
                                             <div className="input-group justify-content-center">
                                                 <span className="input-group-text">
-                                                    <img src={iconProducto} className="usuarios-content-form-icon" alt="icono"/>
+                                                    <img src={icondocumento} className="usuarios-content-form-icon" alt="icono"/>
                                                 </span>
                                                 <select className="form-select" id="regUsuarioTipoId" onChange={this.handleChange.bind(this, "regUsuarioTipoId")} value={this.state.fields["regUsuarioTipoId"]} required >
                                                     <option value="" selected>Seleccione el tipo de identificación</option>
                                                     <option value="Cedula">Cedula</option>
-                                                    <option value="Tarjeta">Tarjeta</option>
-                                                    <option value="Cedula Extranjera">Cedula Extranjera</option>
+                                                    <option value="Pasaporte">Pasaporte</option>
                                                 </select>
                                             </div>
                                             <div>
@@ -230,7 +246,7 @@ class AgregarUsuario extends React.Component {
                                                 <span style={{ color: "red" }}>{this.state.errors["regUsuarioDocumento"]}</span>
                                             </div>
                                         </div>
-                                        <div className="col-sm-5 position-relative">
+                                        <div className="col-sm-4 position-relative">
                                             <label for="regUsuarioRol" className="form-label">Rol de usuario</label>
                                             <div className="input-group justify-content-center">
                                                 <span className="input-group-text">
@@ -246,6 +262,37 @@ class AgregarUsuario extends React.Component {
                                                 <span style={{ color: "red" }}>{this.state.errors["regUsuarioRol"]}</span>
                                             </div>
                                         </div>
+
+                                        <div className="col-sm-4 position-relative">
+                                            <label for="regUsuariocorreo" className="form-label">Correo</label>
+                                            <div className="input-group justify-content-center">
+                                                <span className="input-group-text">
+                                                <img src={correo} className="usuarios-content-form-icon" alt="icono"/>
+                                              
+                                                </span>
+                                                <input type="text" class="form-control" id="regUsuariocorreo" onChange={this.handleChange.bind(this, "regUsuariocorreo")} value={this.state.fields["regUsuariocorreo"]} placeholder="Escriba el numero de documento" required ></input>
+                                            </div>
+                                            <div>
+                                                <span style={{ color: "red" }}>{this.state.errors["regUsuariocorreo"]}</span>
+                                            </div>
+                                        </div>
+                                        <div className="col-sm-5 position-relative">
+                                            <label for="regUsuarioestado" className="form-label">Estado</label>
+                                            <div className="input-group justify-content-center">
+                                                <span className="input-group-text">
+                                                    <img src={iconorol} className="usuarios-content-form-icon" alt="icono"/>
+                                                </span>
+                                                <select className="form-select" id="regUsuarioestado" name="regUsuarioestado" onChange={this.handleChange.bind(this, "regUsuarioestado")} value={this.state.fields["regUsuarioestado"]} required >
+                                                    <option value="" selected>Seleccione el estado del usuario</option>
+                                                    <option value="true" >activo</option>
+                                                    <option value="false" >Inactivo</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <span style={{ color: "red" }}>{this.state.errors["regUsuarioestado"]}</span>
+                                            </div>
+                                        </div>
+                                        
                                         <div className="col-12 card-header">
                                             <div className="d-grid gap-1 d-sm-flex justify-content-center">
                                                 <button type="submit" className="btn btn-primary">
@@ -268,22 +315,7 @@ class AgregarUsuario extends React.Component {
                                     </div>
                                 </div>
                                 <div className="table-responsive">
-                                    <table className="table table-striped table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">#</th>
-                                                <th scope="col">Nombre</th>
-                                                <th scope="col">Apellido</th>
-                                                <th scope="col">Tipo Documento</th>
-                                                <th scope="col">N° Documento</th>
-                                                <th scope="col">Rol</th>
-                                                <th scope="col">Acciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <ListaUsuarios  usu={lista_usuarios}/>
-                                        </tbody>
-                                    </table>
+                                   <ListaUsuarios/>
                                 </div>
                             </div>
                         </div>
@@ -306,3 +338,4 @@ class AgregarUsuario extends React.Component {
 }
 
 export default AgregarUsuario;
+
