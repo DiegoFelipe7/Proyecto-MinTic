@@ -23,6 +23,7 @@ exports.addVenta=(req, res) => {
     res.status(201).json(true);
   });
 }
+//Buscar pod id
 exports.getVentaId=(req, res)=>{
     Venta.findById(req.params.id).then((ventaResult)=>{
     if(ventaResult){
