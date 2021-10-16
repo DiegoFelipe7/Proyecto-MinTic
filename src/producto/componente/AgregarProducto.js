@@ -4,7 +4,7 @@ import iconImagen from '../../img/icon-imagen.png';
 import iconProductoDisponible from '../../img/icon-productoDisponible.png';
 import iconCategorias from '../../img/icon-categorias.png';
 import iconIng from '../../img/icon-btn-ingresar.svg';
-import React, {useState, useEffect} from "react";
+import React from "react";
 import 'bootstrap/dist/css/bootstrap.css';
 import Header from '../../components/Header';
 import AdminLista_Products from './AdminLista_ Products';
@@ -62,7 +62,7 @@ class AgregarProducto extends React.Component {
         }
 
         if (typeof fields["regProductCategoria"] !== "undefined") {
-            if (!fields["regProductCategoria"] != "") {
+            if (fields["regProductCategoria"] === "") {
                 formIsValid = false;
                 errors["regProductCategoria"] = "Seleccione una opción";
             }
@@ -101,7 +101,7 @@ class AgregarProducto extends React.Component {
         }
 
         if (typeof fields["regProductDisponible"] !== "undefined") {
-            if (!fields["regProductDisponible"] != "") {
+            if (fields["regProductDisponible"] === "") {
                 formIsValid = false;
                 errors["regProductDisponible"] = "Seleccione una opción";
             }
