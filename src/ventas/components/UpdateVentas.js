@@ -3,7 +3,7 @@ import iconCliente from '../../img/icon-cliente.png';
 import iconProducto from '../../img/icon-producto.png';
 import iconVendedor from '../../img/icon-vendedor.png';
 import iconIng from '../../img/icon-btn-ingresar.svg';
-import React, { useState } from "react";
+import React from "react";
 import Header from '../../components/Header';
 import Alert from '../../components/Alert';
 import serviceApi from "../../servicios/serviceApi";
@@ -40,7 +40,7 @@ class UpdateVentas extends React.Component {
         const getUsuarios = async () => {
             const response = await serviceApi.Usuarios.list();
             // Filtra solo rol vendedores
-            const result = response.filter(x => x.rol_usu == "Vendedor");
+            const result = response.filter(x => x.rol_usu === "Vendedor");
             this.setState({vendedores: result}); 
         }
         getUsuarios();
@@ -95,7 +95,7 @@ class UpdateVentas extends React.Component {
         
         //Productos
         if (typeof fields["updVentaProducto"] !== "undefined") {
-            if (!fields["updVentaProducto"] != "") {
+            if (fields["updVentaProducto"] === "") {
                 formIsValid = false;
                 errors["updVentaProducto"] = "Seleccione una opción";
             }
@@ -111,7 +111,7 @@ class UpdateVentas extends React.Component {
 
         //Vendedor
         if (typeof fields["updVentaVendedor"] !== "undefined") {
-            if (!fields["updVentaVendedor"] != "") {
+            if (fields["updVentaVendedor"] === "") {
                 formIsValid = false;
                 errors["updVentaVendedor"] = "Seleccione una opción";
             }

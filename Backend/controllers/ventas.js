@@ -43,7 +43,9 @@ exports.deleteVenta = (req, res) => {
   const id = req.params.id;
 
   Venta.deleteOne({ _id: id }).then((ventaResult) => {
-    res.status(200).json("La venta se eliminó satisfactoriamente.");
+    if(ventaResult.deletedCount === 1){
+      return res.status(200).json(true);
+    }
   });
 };
 

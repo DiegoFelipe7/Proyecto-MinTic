@@ -28,7 +28,7 @@ exports.addProduct=(req, res) => {
         return res.status(404).json(false);
       }
     });
-}
+};
 exports.getProductId=(req, res)=>{
   Producto.findById(req.params.id).then((productResult)=>{
     if(productResult){
@@ -37,7 +37,7 @@ exports.getProductId=(req, res)=>{
       res.status(404).json("producto no encontrado");
     }
   })
-}
+};
 exports.getProductIdLazyLoading = (req, res) => {
   Producto.findById(req.params.id)
     .populate("categoria")
@@ -54,14 +54,16 @@ exports.getProductoDisponible=(req, res) => {
   Producto.find({disponible:true}).then((productoResult) => {
     res.status(200).json(productoResult);
   });
-}
+};
 
 //método eliminar
 exports.deleteProduct = (req, res) => {
   const id = req.params.id;
 
   Producto.deleteOne({ _id: id }).then((productoResult) => {
-    res.status(200).json("El producto se eliminó satisfactoriamente.");
+    if(productoResult.deletedCount === 1){
+      return res.status(200).json(true);
+    }
   });
 };
 
@@ -81,9 +83,9 @@ exports.editProduct = (req, res) => {
 
   Producto.findByIdAndUpdate(req.body._id, productoUpd).then((productoResult) => {
     if (productoResult) {
-      res.status(200).json(productoResult);
+      res.status(200).json(true);
     } else {
-      res.status(404).json("Producto no encontrado");
+      res.status(404).json(false);
     }
   });
 };

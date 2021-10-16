@@ -4,7 +4,7 @@ import iconProductoDisponible from '../../img/icon-productoDisponible.png';
 import iconCategorias from '../../img/icon-categorias.png';
 import iconIng from '../../img/icon-btn-ingresar.svg';
 import 'bootstrap/dist/css/bootstrap.css';
-import React, {useState, useEffect} from "react";
+import React from "react";
 import Header from '../../components/Header';
 import Alert from '../../components/Alert';
 import serviceApi from "../../servicios/serviceApi";
@@ -65,7 +65,7 @@ class UpdateProd extends React.Component {
 
         //Categoria
         if (typeof fields["updProductCategoria"] !== "undefined") {
-            if (!fields["updProductCategoria"] != "") {
+            if (fields["updProductCategoria"] === "") {
                 formIsValid = false;
                 errors["updProductCategoria"] = "Seleccione una opción";
             }
@@ -89,7 +89,7 @@ class UpdateProd extends React.Component {
 
         //Disponible
         if (typeof fields["updProductDisponible"] !== "undefined") {
-            if (!fields["updProductDisponible"] != "") {
+            if (fields["updProductDisponible"] === "") {
                 formIsValid = false;
                 errors["updProductDisponible"] = "Seleccione una opción";
             }

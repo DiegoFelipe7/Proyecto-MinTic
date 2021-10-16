@@ -37,7 +37,7 @@ class AgregarVenta extends React.Component {
         const getUsuarios = async () => {
             const response = await serviceApi.Usuarios.list();
             // Filtra solo rol vendedores
-            const result = response.filter(x => x.rol_usu == "Vendedor");
+            const result = response.filter(x => x.rol_usu === "Vendedor");
             this.setState({vendedores: result}); 
         }
         getUsuarios();
@@ -95,7 +95,7 @@ class AgregarVenta extends React.Component {
         }
 
         if (typeof fields["regVentaProducto"] !== "undefined") {
-            if (!fields["regVentaProducto"] != "") {
+            if (fields["regVentaProducto"] === "") {
                 formIsValid = false;
                 errors["regVentaProducto"] = "Seleccione una opción";
             }
@@ -124,7 +124,7 @@ class AgregarVenta extends React.Component {
         }
 
         if (typeof fields["regVentaVendedor"] !== "undefined") {
-            if (!fields["regVentaVendedor"] != "") {
+            if (fields["regVentaVendedor"] === "") {
                 formIsValid = false;
                 errors["regVentaVendedor"] = "Seleccione una opción";
             }
