@@ -3,7 +3,7 @@ const router = express.Router();
 
 const ProductController = require("../controllers/products");
 const auth=require("../middleware/auth");
-router.get("",auth,ProductController.getProducts);
+router.get("",ProductController.getProducts);
 router.post("",ProductController.addProduct);
 router.get("/disponibles", ProductController.getProductoDisponible);
 router.get("/entire/:id", ProductController.getProductIdLazyLoading);
