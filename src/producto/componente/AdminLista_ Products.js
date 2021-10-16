@@ -14,10 +14,13 @@ const AdminLista_Products = () => {
 
     const EliminarItem = idSeleccionado => {
         const fetchData = async () => {
-            const response = await serviceApi.products.delete(idSeleccionado);
-            setAlerta("success");
-            setAlertaMensaje("Producto eliminado correctamente");
-            setTimeout(() => window.location.reload(), 1000);
+            let response = null;
+            response = await serviceApi.products.delete(idSeleccionado);
+            if(response){
+                setAlerta("success");
+                setAlertaMensaje("Producto eliminado correctamente");
+                setTimeout(() => window.location.reload(), 1000);
+            }
         };
 
         fetchData();
